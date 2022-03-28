@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/middle.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/small.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="【摘要】 目录摘要训练1、下载代码2、配置环境3、准备数据集4、生成数据集5、修改配置参数6、修改train.py的参数7、查看训练结果测试摘要YOLOV5严格意义上说并不是YOLO的第五个版本，因为它并没有得到YOLO之父Joe Redmon的认可，但是给出的测试数据总体表现还是不错。详细数据如下：YOLOv5并不是一个单独的模型，而是一个模型家族，包括了YOLOv5s、YOLOv5m、YOLO">
+<meta property="og:type" content="article">
+<meta property="og:title" content="YoloV5实战：手把手教物体检测——YoloV5">
+<meta property="og:url" content="http://example.com/2022/03/26/yoloweihua/index.html">
+<meta property="og:site_name" content="AlanWu的博客">
+<meta property="og:description" content="【摘要】 目录摘要训练1、下载代码2、配置环境3、准备数据集4、生成数据集5、修改配置参数6、修改train.py的参数7、查看训练结果测试摘要YOLOV5严格意义上说并不是YOLO的第五个版本，因为它并没有得到YOLO之父Joe Redmon的认可，但是给出的测试数据总体表现还是不错。详细数据如下：YOLOv5并不是一个单独的模型，而是一个模型家族，包括了YOLOv5s、YOLOv5m、YOLO">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201023232701871.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2020102323275322.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hoaGhoaGhoaGh3d3d3d3d3d3d3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2020102323280512.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200924200709826.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2020092420072036.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201023232827265.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201023232908956.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201107122234540.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hoaGhoaGhoaGh3d3d3d3d3d3d3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201107122322539.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hoaGhoaGhoaGh3d3d3d3d3d3d3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201107122331603.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hoaGhoaGhoaGh3d3d3d3d3d3d3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201107122341529.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hoaGhoaGhoaGh3d3d3d3d3d3d3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201107122348665.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hoaGhoaGhoaGh3d3d3d3d3d3d3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201107122405745.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hoaGhoaGhoaGh3d3d3d3d3d3d3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201107122414380.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hoaGhoaGhoaGh3d3d3d3d3d3d3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201107122433991.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hoaGhoaGhoaGh3d3d3d3d3d3d3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201107122442924.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hoaGhoaGhoaGh3d3d3d3d3d3d3,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2022-03-26T03:20:34.959Z">
+<meta property="article:modified_time" content="2022-03-28T03:31:45.788Z">
+<meta property="article:author" content="阿良">
+<meta property="article:tag" content="学习，小白">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20201023232701871.png">
+
+<link rel="canonical" href="http://example.com/2022/03/26/yoloweihua/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>YoloV5实战：手把手教物体检测——YoloV5 | AlanWu的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KE92GGXDNB"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-KE92GGXDNB');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">AlanWu的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">心所向，持以恒</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="download fa-fw"></i>资源</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/26/yoloweihua/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="阿良">
+      <meta itemprop="description" content="不必为昨天的泪而弄湿今天的阳光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="AlanWu的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          YoloV5实战：手把手教物体检测——YoloV5
+        </h1>
+
+        <div class="post-meta">
+            
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-03-26 11:20:34" itemprop="dateCreated datePublished" datetime="2022-03-26T11:20:34+08:00">2022-03-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-03-28 11:31:45" itemprop="dateModified" datetime="2022-03-28T11:31:45+08:00">2022-03-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/yolov5/" itemprop="url" rel="index"><span itemprop="name">yolov5</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>【摘要】 目录摘要训练1、下载代码2、配置环境3、准备数据集4、生成数据集5、修改配置参数6、修改train.py的参数7、查看训练结果测试摘要YOLOV5严格意义上说并不是YOLO的第五个版本，因为它并没有得到YOLO之父Joe Redmon的认可，但是给出的测试数据总体表现还是不错。详细数据如下：YOLOv5并不是一个单独的模型，而是一个模型家族，包括了YOLOv5s、YOLOv5m、YOLO…</p>
+<span id="more"></span>
+
+<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>YOLOV5严格意义上说并不是YOLO的第五个版本，因为它并没有得到YOLO之父Joe Redmon的认可，但是给出的测试数据总体表现还是不错。详细数据如下：</p>
+<p><img src="https://img-blog.csdnimg.cn/20201023232701871.png"></p>
+<p>点击并拖拽以移动</p>
+<p>YOLOv5并不是一个单独的模型，而是一个模型家族，包括了YOLOv5s、YOLOv5m、YOLOv5l、YOLOv5x、YOLOv5x+TTA，这点有点儿像EfficientDet。由于没有找到V5的论文，我们也只能从代码去学习它。总体上和YOLOV4差不多，可以认为是YOLOV5的加强版。</p>
+<p>项目地址：GitHub - ultralytics&#x2F;yolov5: YOLOv5 🚀 in PyTorch &gt; ONNX &gt; CoreML &gt; TFLite</p>
+<h2 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h2><h3 id="1、下载代码"><a href="#1、下载代码" class="headerlink" title="1、下载代码"></a>1、下载代码</h3><p>项目地址：<a target="_blank" rel="noopener" href="https://github.com/ultralytics/YOLOv5%EF%BC%8C%E6%9C%80%E8%BF%91%E4%BD%9C%E8%80%85%E5%8F%88%E6%9B%B4%E6%96%B0%E4%BA%86%E4%B8%80%E4%BA%9B%E4%BB%A3%E7%A0%81%E3%80%82">https://github.com/ultralytics/YOLOv5，最近作者又更新了一些代码。</a></p>
+<p><img src="https://img-blog.csdnimg.cn/2020102323275322.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hoaGhoaGhoaGh3d3d3d3d3d3d3,size_16,color_FFFFFF,t_70"></p>
+<p>点击并拖拽以移动</p>
+<h3 id="2、配置环境"><a href="#2、配置环境" class="headerlink" title="2、配置环境"></a>2、配置环境</h3><p>matplotlib&gt;&#x3D;3.2.2</p>
+<p>numpy&gt;&#x3D;1.18.5</p>
+<p>opencv-python&gt;&#x3D;4.1.2</p>
+<p>pillow</p>
+<p>PyYAML&gt;&#x3D;5.3</p>
+<p>scipy&gt;&#x3D;1.4.1</p>
+<p>tensorboard&gt;&#x3D;2.2</p>
+<p>torch&gt;&#x3D;1.6.0</p>
+<p>torchvision&gt;&#x3D;0.7.0</p>
+<p>tqdm&gt;&#x3D;4.41.0<br>点击并拖拽以移动</p>
+<h3 id="3、准备数据集"><a href="#3、准备数据集" class="headerlink" title="3、准备数据集"></a>3、准备数据集</h3><p>数据集采用Labelme标注的数据格式，数据集从RSOD数据集中获取了飞机和油桶两类数据集，并将其转为Labelme标注的数据集。</p>
+<p>数据集的地址： <a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1iTUpvA9_cwx1qiH8zbRmDg">https://pan.baidu.com/s/1iTUpvA9_cwx1qiH8zbRmDg</a></p>
+<p>提取码：gr6g</p>
+<p>或者：LabelmeData.zip_yolov5实战-深度学习文档类资源-CSDN下载</p>
+<p>将下载的数据集解压后放到工程的根目录。为下一步生成测试用的数据集做准备。如下图：</p>
+<p><img src="https://img-blog.csdnimg.cn/2020102323280512.png"></p>
+<p>点击并拖拽以移动</p>
+<h3 id="4、生成数据集"><a href="#4、生成数据集" class="headerlink" title="4、生成数据集"></a>4、生成数据集</h3><p>YoloV5的数据集和以前版本的数据集并不相同，我们先看一下转换后的数据集。</p>
+<p>数据结构如下图：</p>
+<p><img src="https://img-blog.csdnimg.cn/20200924200709826.png"></p>
+<p>点击并拖拽以移动</p>
+<p>images文件夹存放train和val的图片</p>
+<p>labels里面存放train和val的物体数据，里面的每个txt文件和images里面的图片是一一对应的。</p>
+<p>txt文件的内容如下：</p>
+<p><img src="https://img-blog.csdnimg.cn/2020092420072036.png"></p>
+<p>点击并拖拽以移动</p>
+<p>格式：物体类别 x y w h  </p>
+<p>坐标是不是真实的坐标，是将坐标除以宽高后的计算出来的，是相对于宽和高的比例。</p>
+<p>下面我们编写生成数据集的代码，新建LabelmeToYoloV5.py，然后写入下面的代码。</p>
+<p>import os</p>
+<p>import numpy as np</p>
+<p>import json</p>
+<p>from glob import glob</p>
+<p>import cv2</p>
+<p>from sklearn.model_selection import train_test_split</p>
+<p>from os import getcwd<br>classes &#x3D; [“aircraft”, “oiltank”]</p>
+<h1 id="1-标签路径"><a href="#1-标签路径" class="headerlink" title="1.标签路径"></a>1.标签路径</h1><p>labelme_path &#x3D; “LabelmeData&#x2F;“</p>
+<p>isUseTest &#x3D; True  # 是否创建test集</p>
+<h1 id="3-获取待处理文件"><a href="#3-获取待处理文件" class="headerlink" title="3.获取待处理文件"></a>3.获取待处理文件</h1><p>files &#x3D; glob(labelme_path + “*.json”)</p>
+<p>files &#x3D; [i.replace(“\“, “&#x2F;“).split(“&#x2F;“)[-1].split(“.json”)[0] for i in files]</p>
+<p>print(files)</p>
+<p>if isUseTest:</p>
+<pre><code>trainval_files, test_files = train_test_split(files, test_size=0.1, random_state=55)
+</code></pre>
+<p>else:</p>
+<pre><code>trainval_files = files
+</code></pre>
+<h1 id="split"><a href="#split" class="headerlink" title="split"></a>split</h1><p>train_files, val_files &#x3D; train_test_split(trainval_files, test_size&#x3D;0.1, random_state&#x3D;55)<br>def convert(size, box):</p>
+<pre><code>dw = 1. / (size[0])
+
+dh = 1. / (size[1])
+
+x = (box[0] + box[1]) / 2.0 - 1
+
+y = (box[2] + box[3]) / 2.0 - 1
+
+w = box[1] - box[0]
+
+h = box[3] - box[2]
+
+x = x * dw
+
+w = w * dw
+
+y = y * dh
+
+h = h * dh
+
+return (x, y, w, h)
+</code></pre>
+<p>wd &#x3D; getcwd()</p>
+<p>print(wd)<br>def ChangeToYolo5(files, txt_Name):</p>
+<pre><code>if not os.path.exists(&#39;tmp/&#39;):
+
+    os.makedirs(&#39;tmp/&#39;)
+
+list_file = open(&#39;tmp/%s.txt&#39; % (txt_Name), &#39;w&#39;)
+
+for json_file_ in files:
+
+    json_filename = labelme_path + json_file_ + &quot;.json&quot;
+
+    imagePath = labelme_path + json_file_ + &quot;.jpg&quot;
+
+    list_file.write(&#39;%s/%s\n&#39; % (wd, imagePath))
+
+    out_file = open(&#39;%s/%s.txt&#39; % (labelme_path, json_file_), &#39;w&#39;)
+
+    json_file = json.load(open(json_filename, &quot;r&quot;, encoding=&quot;utf-8&quot;))
+
+    height, width, channels = cv2.imread(labelme_path + json_file_ + &quot;.jpg&quot;).shape
+
+    for multi in json_file[&quot;shapes&quot;]:
+
+        points = np.array(multi[&quot;points&quot;])
+
+        xmin = min(points[:, 0]) if min(points[:, 0]) &gt; 0 else 0
+
+        xmax = max(points[:, 0]) if max(points[:, 0]) &gt; 0 else 0
+
+        ymin = min(points[:, 1]) if min(points[:, 1]) &gt; 0 else 0
+
+        ymax = max(points[:, 1]) if max(points[:, 1]) &gt; 0 else 0
+
+        label = multi[&quot;label&quot;]
+
+        if xmax &lt;= xmin:
+
+            pass
+
+        elif ymax &lt;= ymin:
+
+            pass
+
+        else:
+
+            cls_id = classes.index(label)
+
+            b = (float(xmin), float(xmax), float(ymin), float(ymax))
+
+            bb = convert((width, height), b)
+
+            out_file.write(str(cls_id) + &quot; &quot; + &quot; &quot;.join([str(a) for a in bb]) + &#39;\n&#39;)
+
+            print(json_filename, xmin, ymin, xmax, ymax, cls_id)
+</code></pre>
+<p>ChangeToYolo5(train_files, “train”)</p>
+<p>ChangeToYolo5(val_files, “val”)</p>
+<p>ChangeToYolo5(test_files, “test”)<br>点击并拖拽以移动<br>这段代码执行完成会在LabelmeData生成每个图片的txt标注数据，同时在tmp文件夹下面生成训练集、验证集和测试集的txt，txt记录的是图片的路径，为下一步生成YoloV5训练和测试用的数据集做准备。在tmp文件夹下面新建MakeData.py文件，生成最终的结果，目录结构如下图：</p>
+<p><img src="https://img-blog.csdnimg.cn/20201023232827265.png"></p>
+<p>点击并拖拽以移动</p>
+<p>打开MakeData.py,写入下面的代码。</p>
+<p>import shutil<br>import os</p>
+<p>file_List &#x3D; [“train”, “val”, “test”]<br>for file in file_List:<br>    if not os.path.exists(‘..&#x2F;VOC&#x2F;images&#x2F;%s’ % file):<br>        os.makedirs(‘..&#x2F;VOC&#x2F;images&#x2F;%s’ % file)<br>    if not os.path.exists(‘..&#x2F;VOC&#x2F;labels&#x2F;%s’ % file):<br>        os.makedirs(‘..&#x2F;VOC&#x2F;labels&#x2F;%s’ % file)<br>    print(os.path.exists(‘..&#x2F;tmp&#x2F;%s.txt’ % file))<br>    f &#x3D; open(‘..&#x2F;tmp&#x2F;%s.txt’ % file, ‘r’)<br>    lines &#x3D; f.readlines()<br>    for line in lines:<br>        print(line)<br>        line &#x3D; “&#x2F;“.join(line.split(‘&#x2F;‘)[-5:]).strip()<br>        shutil.copy(line, “..&#x2F;VOC&#x2F;images&#x2F;%s” % file)<br>        line &#x3D; line.replace(‘JPEGImages’, ‘labels’)<br>        line &#x3D; line.replace(‘jpg’, ‘txt’)<br>        shutil.copy(line, “..&#x2F;VOC&#x2F;labels&#x2F;%s&#x2F;“ % file)<br>点击并拖拽以移动<br>执行完成后就可以生成YoloV5训练使用的数据集了。结果如下：</p>
+<p><img src="https://img-blog.csdnimg.cn/20201023232908956.png"></p>
+<p>点击并拖拽以移动</p>
+<p>5、修改配置参数<br>打开voc.yaml文件，修改里面的配置参数<br>点击并拖拽以移动<br>train: VOC&#x2F;images&#x2F;train&#x2F;  # 训练集图片的路径<br>点击并拖拽以移动<br>val: VOC&#x2F;images&#x2F;val&#x2F;  # 验证集图片的路径<br>点击并拖拽以移动</p>
+<h1 id="number-of-classes"><a href="#number-of-classes" class="headerlink" title="number of classes"></a>number of classes</h1><p>nc: 2 #检测的类别，本次数据集有两个类别所以写2</p>
+<h1 id="class-names"><a href="#class-names" class="headerlink" title="class names"></a>class names</h1><p>names: [“aircraft”, “oiltank”]#类别的名称，和转换数据集时的list对应<br>点击并拖拽以移动<br>6、修改train.py的参数<br>cfg参数是YoloV5 模型的配置文件，模型的文件存放在models文件夹下面，按照需求填写不同的文件。<br>点击并拖拽以移动<br>weights参数是YoloV5的预训练模型，和cfg对应，例：cfg配置的是yolov5s.yaml，weights就要配置yolov5s.pt<br>点击并拖拽以移动<br>data是配置数据集的配置文件，我们选用的是voc.yaml，所以配置data&#x2F;voc.yaml<br>点击并拖拽以移动<br>修改上面三个参数就可以开始训练了，其他的参数根据自己的需求修改。修改后的参数配置如下：<br>点击并拖拽以移动<br>parser.add_argument(‘–weights’, type&#x3D;str, default&#x3D;’yolov5s.pt’, help&#x3D;’initial weights path’)</p>
+<p>parser.add_argument(‘–cfg’, type&#x3D;str, default&#x3D;’yolov5s.yaml’, help&#x3D;’model.yaml path’)</p>
+<p>parser.add_argument(‘–data’, type&#x3D;str, default&#x3D;’data&#x2F;voc.yaml’, help&#x3D;’data.yaml path’)<br>点击并拖拽以移动<br> 修改完成后，就可以开始训练了。如下图所示：</p>
+<p><img src="https://img-blog.csdnimg.cn/20201107122234540.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hoaGhoaGhoaGh3d3d3d3d3d3d3,size_16,color_FFFFFF,t_70"></p>
+<p>点击并拖拽以移动</p>
+<p>点击并拖拽以移动</p>
+<h3 id="7、查看训练结果"><a href="#7、查看训练结果" class="headerlink" title="7、查看训练结果"></a>7、查看训练结果</h3><p>在经历了300epoch训练之后，我们会在runs文件夹下面找到训练好的权重文件和训练过程的一些文件。如图：</p>
+<p><img src="https://img-blog.csdnimg.cn/20201107122322539.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hoaGhoaGhoaGh3d3d3d3d3d3d3,size_16,color_FFFFFF,t_70"></p>
+<p><img src="https://img-blog.csdnimg.cn/20201107122331603.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hoaGhoaGhoaGh3d3d3d3d3d3d3,size_16,color_FFFFFF,t_70"></p>
+<p><img src="https://img-blog.csdnimg.cn/20201107122341529.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hoaGhoaGhoaGh3d3d3d3d3d3d3,size_16,color_FFFFFF,t_70"></p>
+<p><img src="https://img-blog.csdnimg.cn/20201107122348665.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hoaGhoaGhoaGh3d3d3d3d3d3d3,size_16,color_FFFFFF,t_70"></p>
+<p><img src="https://img-blog.csdnimg.cn/20201107122405745.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hoaGhoaGhoaGh3d3d3d3d3d3d3,size_16,color_FFFFFF,t_70"></p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>首先需要在voc.yaml中增加测试集的路径，打开voc.yaml，在val字段后面增加test: tmp&#x2F;test.txt这行代码，如图：</p>
+<p><img src="https://img-blog.csdnimg.cn/20201107122414380.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hoaGhoaGhoaGh3d3d3d3d3d3d3,size_16,color_FFFFFF,t_70"></p>
+<p>点击并拖拽以移动</p>
+<p>修改test.py中的参数，下面的这几个参数要修改。</p>
+<p>parser &#x3D; argparse.ArgumentParser(prog&#x3D;’test.py’)<br>parser.add_argument(‘–weights’, nargs&#x3D;’+’, type&#x3D;str, default&#x3D;’runs&#x2F;exp7&#x2F;weights&#x2F;best.pt’, help&#x3D;’model.pt path(s)’)<br>parser.add_argument(‘–data’, type&#x3D;str, default&#x3D;’data&#x2F;voc.yaml’, help&#x3D;’*.data path’)<br>parser.add_argument(‘–batch-size’, type&#x3D;int, default&#x3D;2, help&#x3D;’size of each image batch’)<br>parser.add_argument(‘–save-txt’, default&#x3D;’True’, action&#x3D;’store_true’, help&#x3D;’save results to *.txt’)</p>
+<p>在275行 修改test的方法，增加保存测试结果的路径。这样测试完成后就可以在inference\images查看到测试的图片，在inference\output中查看到保存的测试结果。</p>
+<p>如图：</p>
+<p><img src="https://img-blog.csdnimg.cn/20201107122433991.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hoaGhoaGhoaGh3d3d3d3d3d3d3,size_16,color_FFFFFF,t_70"></p>
+<p>点击并拖拽以移动</p>
+<p>下面是运行的结果：</p>
+<p><img src="https://img-blog.csdnimg.cn/20201107122442924.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hoaGhoaGhoaGh3d3d3d3d3d3d3,size_16,color_FFFFFF,t_70"></p>
+<p>点击并拖拽以移动</p>
+<p>代码和模型：手把手教物体检测yolov5-master.zip_yolov5数字识别-深度学习文档类资源-CSDN下载</p>
+<p>点击并拖拽以移动</p>
+<p>转载自华为云社区</p>
+<p>[]: <a target="_blank" rel="noopener" href="https://bbs.huaweicloud.com/blogs/330644">https://bbs.huaweicloud.com/blogs/330644</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AD%A6%E4%B9%A0%EF%BC%8C%E5%B0%8F%E7%99%BD/" rel="tag"># 学习，小白</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/03/25/shanghaidaxueyolo/" rel="prev" title="上海交大提出CDNet：基于改进YOLOv5的斑马线和汽车过线行为检测">
+      <i class="fa fa-chevron-left"></i> 上海交大提出CDNet：基于改进YOLOv5的斑马线和汽车过线行为检测
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83"><span class="nav-number">2.</span> <span class="nav-text">训练</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E4%B8%8B%E8%BD%BD%E4%BB%A3%E7%A0%81"><span class="nav-number">2.1.</span> <span class="nav-text">1、下载代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83"><span class="nav-number">2.2.</span> <span class="nav-text">2、配置环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E3%80%81%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">2.3.</span> <span class="nav-text">3、准备数据集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%E3%80%81%E7%94%9F%E6%88%90%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">2.4.</span> <span class="nav-text">4、生成数据集</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E6%A0%87%E7%AD%BE%E8%B7%AF%E5%BE%84"><span class="nav-number"></span> <span class="nav-text">1.标签路径</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E8%8E%B7%E5%8F%96%E5%BE%85%E5%A4%84%E7%90%86%E6%96%87%E4%BB%B6"><span class="nav-number"></span> <span class="nav-text">3.获取待处理文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#split"><span class="nav-number"></span> <span class="nav-text">split</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#number-of-classes"><span class="nav-number"></span> <span class="nav-text">number of classes</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#class-names"><span class="nav-number"></span> <span class="nav-text">class names</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7%E3%80%81%E6%9F%A5%E7%9C%8B%E8%AE%AD%E7%BB%83%E7%BB%93%E6%9E%9C"><span class="nav-number">0.1.</span> <span class="nav-text">7、查看训练结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-number">1.</span> <span class="nav-text">测试</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="阿良"
+      src="/images/author.jpg">
+  <p class="site-author-name" itemprop="name">阿良</p>
+  <div class="site-description" itemprop="description">不必为昨天的泪而弄湿今天的阳光</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=
+       86 src="//music.163.com/outchain/player?type=2&id=1328047738&auto=1&height=66"></iframe>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <!-- -->
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">阿良</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
