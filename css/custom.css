@@ -1,0 +1,14 @@
+@font-face {
+    font-family:'arzhu';
+    src:url('E:\Blog\themes\butterfly\source\css\cake.ttf'); /* �޸ĳ�������� */
+    font-display:swap
+}
+h1#site-title {
+    font-family:arzhu!important
+}
+span#subtitle {
+    font-family:arzhu!important
+}
+a#site-name {
+    font-family:arzhu!important
+}
