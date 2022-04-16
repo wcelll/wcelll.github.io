@@ -1,8 +1,8 @@
 @font-face {
-  font-family: "iconfont"; /* Project id 3288424 */
-  src: url('iconfont.woff2?t=1648606118013') format('woff2'),
-       url('iconfont.woff?t=1648606118013') format('woff'),
-       url('iconfont.ttf?t=1648606118013') format('truetype');
+  font-family: "iconfont"; /* Project id 3334079 */
+  src: url('iconfont.woff2?t=1650092067105') format('woff2'),
+       url('iconfont.woff?t=1650092067105') format('woff'),
+       url('iconfont.ttf?t=1650092067105') format('truetype');
 }
 
 .iconfont {
@@ -19,12 +19,6 @@
   color: rgb(243, 236 ,106);
 }
 
-.icon-zhihu:before {
-  content: "\e6cd";
-  font-size: 19px;
-  color: rgb(0, 120 ,217);
-}
-
 .icon-icon_baidulogo:before {
   content: "\e65e";
   font-size: 19px;
@@ -35,12 +29,6 @@
   content: "\e6b6";
   font-size: 19px;
   color: rgb(254, 145 ,177);
-}
-
-.icon-aiqiyi:before {
-  content: "\e60c";
-  font-size: 19px;
-  color: rgb(107, 189 ,63);
 }
 
 .icon-weixin:before {
@@ -59,12 +47,6 @@
   content: "\e9e3";
   font-size: 19px;
   color: rgb(96, 204 ,33);
-}
-
-.icon-tencent:before {
-  content: "\e601";
-  font-size: 19px;
-  color: rgb(78, 194 ,255);
 }
 
 .icon-zhiwang:before {
@@ -90,3 +72,30 @@
   font-size: 19px;
   color: rgb(134, 214 ,201);
 }
+
+.icon-aiqiyi:before {
+  content: "\e605";
+  font-size: 19px;
+  color: rgb(107, 189 ,63);
+}
+
+.icon-tengxunvideo:before {
+  content: "\e615";
+  font-size: 19px;
+  color: rgb(78, 194 ,255);
+}
+
+.icon-kaoyanyingyu:before {
+  content: "\e606";
+  font-size: 19px;
+  color: rgb(78, 194 ,255);
+}
+
+.icon-zhihu:before {
+  content: "\e601";
+}
+
+.icon-Group45611:before {
+  content: "\e69b";
+}
+
