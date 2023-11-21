@@ -1,0 +1,603 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>初学入门YOLOv5手势识别之制作并训练自己的数据集 | AlanWu的博客</title><meta name="keywords" content="深度学习 视觉检测 tensorflow ai 计算机视觉，encrypted"><meta name="author" content="AlanWu"><meta name="copyright" content="AlanWu"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="随着短视频vlog时代的到来，自动驾驶技术、人脸识别门禁系统、智慧视频监控、AI机器人等贴近人们日常生活的视频信息量的暴增，视频目标检测的研究具有无比的现实研究意义与未来行业潜力。视频是由一系列具有时间连续性和内容相关性的图像组成，所以关于视频目标检测的研究自兴起以来就是在经典的图像目标检测算法的基础上进行改进与创新的。软硬件设备的迭代更新，使得视频的流畅度也越来越高，几秒钟的视频画面便可包含高">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初学入门YOLOv5手势识别之制作并训练自己的数据集">
+<meta property="og:url" content="http://example.com/2022/04/01/yolome/index.html">
+<meta property="og:site_name" content="AlanWu的博客">
+<meta property="og:description" content="随着短视频vlog时代的到来，自动驾驶技术、人脸识别门禁系统、智慧视频监控、AI机器人等贴近人们日常生活的视频信息量的暴增，视频目标检测的研究具有无比的现实研究意义与未来行业潜力。视频是由一系列具有时间连续性和内容相关性的图像组成，所以关于视频目标检测的研究自兴起以来就是在经典的图像目标检测算法的基础上进行改进与创新的。软硬件设备的迭代更新，使得视频的流畅度也越来越高，几秒钟的视频画面便可包含高">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://mms2.baidu.com/it/u=1541053178,3942721378&fm=253&app=138&f=JPEG&fmt=auto&q=75?w=474&h=251">
+<meta property="article:published_time" content="2022-04-01T03:53:45.117Z">
+<meta property="article:modified_time" content="2023-11-21T11:00:36.133Z">
+<meta property="article:author" content="AlanWu">
+<meta property="article:tag" content="深度学习 视觉检测 tensorflow ai 计算机视觉，encrypted">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mms2.baidu.com/it/u=1541053178,3942721378&fm=253&app=138&f=JPEG&fmt=auto&q=75?w=474&h=251"><link rel="shortcut icon" href="https://pic2.zhimg.com/80/v2-90c7858a0c40298cc6da5a4e7ac671de_xl.jpg"><link rel="canonical" href="http://example.com/2022/04/01/yolome/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '初学入门YOLOv5手势识别之制作并训练自己的数据集',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2023-11-21 19:00:36'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><link rel="stylesheet" href="APlayer.min.css"><div id="aplayer"></div><script src="https://cdn.jsdelivr.net/gh/radium-bit/res@master/live2d/autoload.js" async></script><script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js" async></script><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/iconfont.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zyoushuo/Blog@latest/hexo/css/loading_style_1.css" ><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zyoushuo/Blog@latest/hexo/css/loading_style_2.css" ><meta name="generator" content="Hexo 6.1.0"></head><body>
+<div id='loader'>
+    
+    <div class="outer_box">
+    <div class='loader_overlay'></div>
+    <div class='loader_cogs'>
+        <div class='loader_cogs__top'>
+            <div class='top_part'></div>
+            <div class='top_part'></div>
+            <div class='top_part'></div>
+            <div class='top_hole'></div>
+        </div>
+        <div class='loader_cogs__left'>
+            <div class='left_part'></div>
+            <div class='left_part'></div>
+            <div class='left_part'></div>
+            <div class='left_hole'></div>
+        </div>
+        <div class='loader_cogs__bottom'>
+            <div class='bottom_part'></div>
+            <div class='bottom_part'></div>
+            <div class='bottom_part'></div>
+            <div class='bottom_hole'></div>
+        </div>
+        <p style="text-align:center">&nbsp;&nbsp;&nbsp;loading...</p>
+    </div>
+    </div>
+    
+</div>
+    
+<script>
+    var endLoading = function () {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loader').classList.add("loading");
+    }
+    window.addEventListener('load',endLoading);
+</script>
+<div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic3.zhimg.com/80/v2-741506174e170418d38dba06563b41b7_720w.jpg?source=1940ef5c" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li><li><a class="site-page child" href="/ChatGPT/"><i class="fa-fw fa fa-rocket"></i><span> ChatGPT</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-american-sign-language-interpreting"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/musics/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('http://mms2.baidu.com/it/u=1541053178,3942721378&amp;fm=253&amp;app=138&amp;f=JPEG&amp;fmt=auto&amp;q=75?w=474&amp;h=251')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">AlanWu的博客</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li><li><a class="site-page child" href="/ChatGPT/"><i class="fa-fw fa fa-rocket"></i><span> ChatGPT</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-american-sign-language-interpreting"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/musics/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">初学入门YOLOv5手势识别之制作并训练自己的数据集</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-04-01T03:53:45.117Z" title="发表于 2022-04-01 11:53:45">2022-04-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-21T11:00:36.133Z" title="更新于 2023-11-21 19:00:36">2023-11-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/yolov5/">yolov5</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="初学入门YOLOv5手势识别之制作并训练自己的数据集"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/9fb64f5821fd4e30bac2ca88e2b57c84.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p>随着短视频vlog时代的到来，自动驾驶技术、人脸识别门禁系统、智慧视频监控、AI机器人等贴近人们日常生活的视频信息量的暴增，视频目标检测的研究具有无比的现实研究意义与未来行业潜力。视频是由一系列具有时间连续性和内容相关性的图像组成，所以关于视频目标检测的研究自兴起以来就是在经典的图像目标检测算法的基础上进行改进与创新的。软硬件设备的迭代更新，使得视频的流畅度也越来越高，几秒钟的视频画面便可包含高达两三百甚至上千张图像，而视频比单纯的图像包含更多的时间和空间信息，若直接用图像目标检测的方法对视频文件的内容逐帧检测，不仅忽视了视频的时空信息还会拖慢检测速度，难以达到实时的需求。如何利用视频提供的时空上下文信息提升检测的准确率、速度等性能，成为了各国研究人员的工作重点。目标检测 (Object Detection) 是计算机视觉和图像处理的一项分支技术，其主要任务是在一幅数字图像中正确识别出目标物体的位置并判断类别。目标检测算法需要框选出图片中的物体，并判断出框选出的物体是什么以及它是否可信。</p>
+<p>得益于近年来 GPU 加速技术和深度学习技术的发展，使得如今基于深度学习的人脸检测能够达到高精度和较好的实时性，有效的改善传统方法的效率低下问题，能够使该项技术广泛应用于医学军事领域等。</p>
+<p>YOLOv5是一种单阶段目标检测算法，该算法在YOLOv4的基础上添加了一些新的改进思路，使其速度与精度都得到了较大的性能提升。YOLO 是一种卷积神经网络，相较于传统神经网络，卷积神经网络能够更好的提取特征，同时还能减少模型参数。</p>
+<p>YOLOv5并不是一个单独的模型，而是一个模型家族，包括了YOLOv5s、YOLOv5m、YOLOv5l、YOLOv5x、YOLOv5x+TTA，这点有点儿像EfficientDet。由于没有找到V5的论文，只能从代码去学习它。总体上它和YOLOV4差不多，可以认为是YOLOV4的加强版。</p>
+<p>对于yolov4而言yolov5的主要的改进思路如下所示：</p>
+<p>输入端：在模型训练阶段，提出了一些改进思路，主要包括Mosaic（马赛克）数据增强、自适应锚框计算、自适应图片缩放；</p>
+<p>基准网络：融合其它检测算法中的一些新思路，主要包括：Focus结构与CSP结构；</p>
+<p>Neck网络：目标检测网络在BackBone与最后的Head输出层之间往往会插入一些层，Yolov5中添加了FPN+PAN结构；</p>
+<p>Head输出层：输出层的锚框机制与YOLOv4相同，主要改进的是训练时的损失函数GIOU_Loss，以及预测框筛选的DIOU_nms。</p>
+<p>   以下篇幅主要描述了我自己手动标注数据集并将其训练的过程。</p>
+<p>一. 环境搭建（不能含有中文路径）<br>开始之前<br>克隆存储库和安装要求.txt在 Python&gt;&#x3D;3.7.0 环境中，包括 PyTorch&gt;&#x3D;1.7。模型和数据集从最新的 YOLOv5 版本自动下载。</p>
+<p>git clone <a target="_blank" rel="noopener" href="https://github.com/ultralytics/yolov5">https://github.com/ultralytics/yolov5</a>  # clone<br>cd yolov5<br>pip install -r requirements.txt  # install</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/d79c75e0931442689c774da73ba18e33.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p>创建自定义模型来检测对象是一个迭代过程，包括收集和组织图像、标记感兴趣的对象、训练模型、将其部署到野外以进行预测，然后使用该部署的模型收集边缘情况的示例以进行重复和改进</p>
+<p>YOLOv5 模型必须在标记数据上进行训练，以便学习该数据中对象的类别。在开始训练之前，有两个选项可用于创建数据集：</p>
+<p>使用Roboflow以YOLO格式自动标记，准备和托管您的自定义数据</p>
+<p>或手动准备数据集<br> 本次例程用到的环境：</p>
+<p>安装yolov5配置环境，我用的是anaconda和pycharm进行yolov5的环境搭建</p>
+<p>pytorch: 1.8.0   python: 3.8.12</p>
+<p>tips：如若使用GPU，cuda version &gt;&#x3D;10.1</p>
+<p>首先要下载并安装yolov5：</p>
+<p>yolov5官方要求 Python&gt;&#x3D;3.6 and PyTorch&gt;&#x3D;1.7</p>
+<p>yolov5源码下载：<a target="_blank" rel="noopener" href="https://github.com/ultralytics/yolov5">https://github.com/ultralytics/yolov5</a></p>
+<p>下载后，进入pytorch环境进入yolov5文件夹，使用换源的方法安装依赖。</p>
+<p>如若前面安装时没有换源，这里强烈建议你使用换源的方法再进行安装</p>
+<p>安装过的模块不会在安装，以防缺少模块，影响后续程序运行以及模型训练。</p>
+<p>使用清华镜像源：</p>
+<p>pip install -r requirements.txt -i  <a target="_blank" rel="noopener" href="https://pypi.tuna.tsinghua.edu.cn/simple">https://pypi.tuna.tsinghua.edu.cn/simple</a></p>
+<p>本文数据集部分内容参考一位大佬的文章：<br>(62条消息) Yolov5训练自己的数据集（详细完整版）_缔宇的博客-CSDN博客_yolov5训练自己的数据集<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_45945548/article/details/121701492">https://blog.csdn.net/qq_45945548/article/details/121701492</a></p>
+<p>环境搭建可以参考 ：<br>(62条消息) 史上最详细yolov5环境配置搭建+配置所需文件_想到好名再改的博客-CSDN博客_yolov5环境配置<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_44697805/article/details/107702939?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522164757209816782246424327%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&amp;request_id=164757209816782246424327&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_ecpm_v1~rank_v31_ecpm-1-107702939.142%5Ev2%5Epc_search_result_cache,143%5Ev4%5Econtrol&amp;utm_term=yolov5%E7%8E%AF%E5%A2%83&amp;spm=1018.2226.3001.4187">https://blog.csdn.net/qq_44697805/article/details/107702939?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522164757209816782246424327%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&amp;request_id=164757209816782246424327&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_ecpm_v1~rank_v31_ecpm-1-107702939.142%5Ev2%5Epc_search_result_cache,143%5Ev4%5Econtrol&amp;utm_term=yolov5%E7%8E%AF%E5%A2%83&amp;spm=1018.2226.3001.4187</a></p>
+<p>二、环境配置所需资源<br>我选用的是pycharm+anaconda搭建的环境，使用Pip命令安装所需功能包,第一次配置时，我的环境如下：python3.8.12+cuda10.2+cudnn-10.2-windows11-x64-v22000.556Windows 功能体验包 1000.22000.556.0+pytorch1.8.0+cpu，后面因为cpu跑模型训练太慢了，所以我换成了torch 1.9.0+cu111 CUDA:0 (GeForce GTX 1650, 4096.0MB)也就是GPU独立显卡来跑yolov5。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/7fdf95330d024be0995ffa03c5427a98.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/02f1bdd6ad8846b98f564c3cca77ab86.png"></p>
+<p>最开始的训练环境CPU，发现太慢了，于是乎我换了GPU</p>
+<p>安装环境：</p>
+<p>git clone <a target="_blank" rel="noopener" href="https://github.com/ultralytics/yolov5">https://github.com/ultralytics/yolov5</a> # 下载 yolov5 项目</p>
+<p>python3 -c “from yolov5.utils.google_utils import gdrive_download; gdrive_download(‘1n_oKgR81BJtqk75b00eAjdv03qVCQn2f’,’coco128.zip’)” # 下载官方数据集</p>
+<p>cd yolov5 #进入yolov5 项目文件</p>
+<p>pip install -U -r requirements.txt #安装需求</p>
+<p>如遇pip install -U -r requirements.txt 这一步报错，则依次手动执行pip install</p>
+<p>pip install numpy&#x3D;&#x3D;1.17</p>
+<p>pip install python&#x3D;&#x3D;3.8</p>
+<p>###下面所有的需要全部装一遍，可以参照 yolov5下的 requirements.txt 文件</p>
+<p>Python&gt;&#x3D;3.7 PyTorch&gt;&#x3D;1.5 Cython numpy&#x3D;&#x3D;1.17 opencv-python torch&gt;&#x3D;1.5 matplotlib</p>
+<p>Pillow tensorboard PyYAML&gt;&#x3D;5.3 torchvision scipy tqdm</p>
+<p>git+<a target="_blank" rel="noopener" href="https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI">https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI</a></p>
+<p>开始进行训练模型的准备</p>
+<p>1.在 yolov5目录下 新建文件夹 VOCData</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/68732cb29e7247e5b11cc34cf80199a7.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p>2.在VOCData下新建两个文件夹 Annotations 以及 images</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/de0b3ebfd91349b1b6e7063a55b146c7.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p>其作用为：</p>
+<p>images：用于存放要标注的图片（jpg格式）</p>
+<p>Annotations ：用于存放标注图片后产生的内容（这里采用XML格式）</p>
+<p> 三. 使用labelImg标注图片<br>1.安装labellmg<br>下载labelImg：<a target="_blank" rel="noopener" href="https://github.com/tzutalin/labelImg">https://github.com/tzutalin/labelImg</a></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/856acfb5de0b4ca8b94de298c055d62c.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/71912a80961a4c2d861bccba09c55161.png"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/b813e5e579fa4291a4bc105229f6df17.png"></p>
+<p>下载后存放目录到yolov5同级下面 </p>
+<p>进入开始页面打开anaconda prompt（anaconda3） </p>
+<p>cd d:</p>
+<p>cd D:\Testcode\labelImg<br>执行命令前，建议更新一下conda<br>conda update -n base -c defaults conda</p>
+<p>然后执行以下命令</p>
+<p>conda install pyqt&#x3D;5<br>conda install -c anaconda lxml<br>pyrcc5 -o libs&#x2F;resources.py resources.qrc</p>
+<ol start="2">
+<li>使用labellmg<br>开始使用labellmg进行图像的标注<br>运行软件前可以更改下要标注的类别。</li>
+</ol>
+<p>这里建议先更改类别因为进入软件后再添加的话，以后每次进入软件都要添加，会比较繁复</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/be10114541204e8eb54db5fba6adf4be.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p>打开labellmg（要进入labellmg文件夹运行，这里使用pycharm打开labellmg文件夹转到目录下再运行）</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/4edb8b34a7f541b4ba2f1c870f0839bb.png"></p>
+<p>python labelImg.py   #运行软件<br> 打开labelimg的自动保存模式（auto save mode）</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/4ec86aa352c04a35a21de53e16866543.png"></p>
+<p>保存位置为D:\Testcode\yolov5-5.0\VOCData\Annotations<br>要标注的图片文件夹D:\Testcode\yolov5-5.0\VOCData\images</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/4271a26360df4ed1ac46d8d6b1e04621.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p>格式默认为XML格式即可，可以更改成yolo，这里就使用默认的XML格式</p>
+<p>点击左方边栏或者屏幕右键选择 Create RectBox 即可进行标注。</p>
+<p>尽可能的完全拟合标注物体，建议放大标注</p>
+<p>其它看个人标准。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/27d0a6beb0ee44c1a4a17bd3611cacf7.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p>四. 划分数据集以及配置文件修改<br>运行代码方式</p>
+<p>第一种：使用pycharm、vscode、python自带的IDLE。如果出现缺少模块的情况（no module named），你可以安装模块，也可以使用后一种方法。</p>
+<p>第二种：进入pytorch环境，进入代码所在目录，使用命令行形式运行（python + 程序名）</p>
+<ol>
+<li>划分训练集、验证集、测试集<br>在VOCData目录下创建程序 split_train_val.py 并运行，程序如下：</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># coding:utf-8</span><br><span class="line"></span><br><span class="line">import os</span><br><span class="line">import random</span><br><span class="line">import argparse</span><br></pre></td></tr></table></figure>
+
+<p>parser &#x3D; argparse.ArgumentParser()<br>#xml文件的地址，根据自己的数据进行修改 xml一般存放在Annotations下<br>parser.add_argument(‘–xml_path’, default&#x3D;’Annotations’, type&#x3D;str, help&#x3D;’input xml label path’)<br>#数据集的划分，地址选择自己数据下的ImageSets&#x2F;Main<br>parser.add_argument(‘–txt_path’, default&#x3D;’ImageSets&#x2F;Main’, type&#x3D;str, help&#x3D;’output txt label path’)<br>opt &#x3D; parser.parse_args()</p>
+<p>trainval_percent &#x3D; 1.0  # 训练集和验证集所占比例。 这里没有划分测试集<br>train_percent &#x3D; 0.9     # 训练集所占比例，可自己进行调整<br>xmlfilepath &#x3D; opt.xml_path<br>txtsavepath &#x3D; opt.txt_path<br>total_xml &#x3D; os.listdir(xmlfilepath)<br>if not os.path.exists(txtsavepath):<br>    os.makedirs(txtsavepath)</p>
+<p>num &#x3D; len(total_xml)<br>list_index &#x3D; range(num)<br>tv &#x3D; int(num * trainval_percent)<br>tr &#x3D; int(tv * train_percent)<br>trainval &#x3D; random.sample(list_index, tv)<br>train &#x3D; random.sample(trainval, tr)</p>
+<p>file_trainval &#x3D; open(txtsavepath + ‘&#x2F;trainval.txt’, ‘w’)<br>file_test &#x3D; open(txtsavepath + ‘&#x2F;test.txt’, ‘w’)<br>file_train &#x3D; open(txtsavepath + ‘&#x2F;train.txt’, ‘w’)<br>file_val &#x3D; open(txtsavepath + ‘&#x2F;val.txt’, ‘w’)</p>
+<p>for i in list_index:<br>    name &#x3D; total_xml[i][:-4] + ‘\n’<br>    if i in trainval:<br>        file_trainval.write(name)<br>        if i in train:<br>            file_train.write(name)<br>        else:<br>            file_val.write(name)<br>    else:<br>        file_test.write(name)</p>
+<p>file_trainval.close()<br>file_train.close()<br>file_val.close()<br>file_test.close()</p>
+<p>运行完毕后 会生成 ImagesSets\Main 文件夹，且在其下生成 测试集、训练集、验证集，存放图片的名字（无后缀.jpg）</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/0ed21737690f4f65915ca60a25a1711b.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p>由于没有分配测试集，所以测试集为空。</p>
+<p>若要分配，更改第 14、15 行代码，更改所在比例即可。</p>
+<ol start="2">
+<li>XML格式转yolo_txt格式<br>在VOCData目录下创建程序 text_to_yolo.py 并运行</li>
+</ol>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/ee93cd92e6184102a7c98cf6af5e0dd6.png"></p>
+<p>程序如下：</p>
+<p>注：需要将第 7 行改成要所标注的类别 以及 代码中各文件绝对路径</p>
+<p>路径需为：d:\images 或者 d:&#x2F;images，双右斜线或者单左斜线</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"></span><br><span class="line">import xml.etree.ElementTree as ET</span><br><span class="line">import os</span><br><span class="line">from os import getcwd</span><br><span class="line"></span><br><span class="line">sets = [&#x27;train&#x27;, &#x27;val&#x27;, &#x27;test&#x27;]</span><br><span class="line">classes = [&quot;victory&quot;]   # 改成自己的类别</span><br><span class="line">abs_path = os.getcwd()</span><br><span class="line">print(abs_path)</span><br><span class="line"></span><br><span class="line">def convert(size, box):</span><br><span class="line">    dw = 1. / (size[0])</span><br><span class="line">    dh = 1. / (size[1])</span><br><span class="line">    x = (box[0] + box[1]) / 2.0 - 1</span><br><span class="line">    y = (box[2] + box[3]) / 2.0 - 1</span><br><span class="line">    w = box[1] - box[0]</span><br><span class="line">    h = box[3] - box[2]</span><br><span class="line">    x = x * dw</span><br><span class="line">    w = w * dw</span><br><span class="line">    y = y * dh</span><br><span class="line">    h = h * dh</span><br><span class="line">    return x, y, w, h</span><br><span class="line"></span><br><span class="line">def convert_annotation(image_id):</span><br><span class="line">    in_file = open(&#x27;D:/Yolov5/yolov5/VOCData/Annotations/%s.xml&#x27; % (image_id), encoding=&#x27;UTF-8&#x27;)</span><br><span class="line">    out_file = open(&#x27;D:/Yolov5/yolov5/VOCData/labels/%s.txt&#x27; % (image_id), &#x27;w&#x27;)</span><br><span class="line">    tree = ET.parse(in_file)</span><br><span class="line">    root = tree.getroot()</span><br><span class="line">    size = root.find(&#x27;size&#x27;)</span><br><span class="line">    w = int(size.find(&#x27;width&#x27;).text)</span><br><span class="line">    h = int(size.find(&#x27;height&#x27;).text)</span><br><span class="line">    for obj in root.iter(&#x27;object&#x27;):</span><br><span class="line">        difficult = obj.find(&#x27;difficult&#x27;).text</span><br><span class="line">        #difficult = obj.find(&#x27;Difficult&#x27;).text</span><br><span class="line">        cls = obj.find(&#x27;name&#x27;).text</span><br><span class="line">        if cls not in classes or int(difficult) == 1:</span><br><span class="line">            continue</span><br><span class="line">        cls_id = classes.index(cls)</span><br><span class="line">        xmlbox = obj.find(&#x27;bndbox&#x27;)</span><br><span class="line">        b = (float(xmlbox.find(&#x27;xmin&#x27;).text), float(xmlbox.find(&#x27;xmax&#x27;).text), float(xmlbox.find(&#x27;ymin&#x27;).text),</span><br><span class="line">             float(xmlbox.find(&#x27;ymax&#x27;).text))</span><br><span class="line">        b1, b2, b3, b4 = b</span><br><span class="line">        # 标注越界修正</span><br><span class="line">        if b2 &gt; w:</span><br><span class="line">            b2 = w</span><br><span class="line">        if b4 &gt; h:</span><br><span class="line">            b4 = h</span><br><span class="line">        b = (b1, b2, b3, b4)</span><br><span class="line">        bb = convert((w, h), b)</span><br><span class="line">        out_file.write(str(cls_id) + &quot; &quot; + &quot; &quot;.join([str(a) for a in bb]) + &#x27;\n&#x27;)</span><br><span class="line"></span><br><span class="line">wd = getcwd()</span><br><span class="line">for image_set in sets:</span><br><span class="line">    if not os.path.exists(&#x27;D:/Yolov5/yolov5/VOCData/labels/&#x27;):</span><br><span class="line">        os.makedirs(&#x27;D:/Yolov5/yolov5/VOCData/labels/&#x27;)</span><br><span class="line">    image_ids = open(&#x27;D:/Yolov5/yolov5/VOCData/ImageSets/Main/%s.txt&#x27; % (image_set)).read().strip().split()</span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>if not os.path.exists(&#39;D:/Yolov5/yolov5/VOCData/dataSet_path/&#39;):
+    os.makedirs(&#39;D:/Yolov5/yolov5/VOCData/dataSet_path/&#39;)
+ 
+list_file = open(&#39;dataSet_path/%s.txt&#39; % (image_set), &#39;w&#39;)
+for image_id in image_ids:
+    list_file.write(&#39;D:/Yolov5/yolov5/VOCData/images/%s.jpg\n&#39; % (image_id))
+    convert_annotation(image_id)
+list_file.close()
+</code></pre>
+<p>运行后会生成如下 labels 文件夹和 dataSet_path 文件夹。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/1152977d70574f679cb1f9f878c5aa67.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p>其中 labels 中为不同图像的标注文件。每个图像对应一个txt文件，文件每一行为一个目标的信息，包括class, x_center, y_center, width, height格式，这种即为 yolo_txt格式</p>
+<p>dataSet_path文件夹包含三个数据集的txt文件，train.txt等txt文件为划分后图像所在位置的绝对路径，如train.txt就含有所有训练集图像的绝对路径。 </p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/4c6bec9d2d774ba1baeb5ad45dc14719.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/5aff21fc48954fdda67761bbdd2d0198.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_18,color_FFFFFF,t_70,g_se,x_16"></p>
+<ol start="3">
+<li>配置文件</li>
+</ol>
+<p>在 yolov5 目录下的 data 文件夹下 新建一个 myvoc.yaml文件（可以自定义命名），用记事本打开。<br>内容是：训练集以及验证集（train.txt和val.txt）绝对路径（通过 text_to_yolo.py 生成），然后是目标的类别数目和类别名称。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/3043ed0b57e544f6b3dd7fef9dfd8635.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p> 我的是这样设置的</p>
+<p>train: D:\Testcode\yolov5-5.0\VOCData\dataSet_path\train.txt<br>val: D:\Testcode\yolov5-5.0\VOCData\dataSet_path\val.txt</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># number of classes</span><br><span class="line"></span><br><span class="line">nc: 1</span><br><span class="line"></span><br><span class="line"># class names</span><br><span class="line"></span><br><span class="line">names: [&quot;victory&quot;]</span><br></pre></td></tr></table></figure>
+
+<p>tips：冒号后面需要加空格</p>
+<ol start="3">
+<li>聚类获得先验框</li>
+</ol>
+<p>3.1 生成anchors文件<br>在VOCData目录下创建程序两个程序 kmeans.py 以及 clauculate_anchors.py<br>不需要运行 kmeans.py，运行 clauculate_anchors.py 即可。</p>
+<p>kmeans.py 程序如下：这不需要运行，也不需要更改，报错则查看第十三行内容。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line">def iou(box, clusters):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    Calculates the Intersection over Union (IoU) between a box and k clusters.</span><br><span class="line">    :param box: tuple or array, shifted to the origin (i. e. width and height)</span><br><span class="line">    :param clusters: numpy array of shape (k, 2) where k is the number of clusters</span><br><span class="line">    :return: numpy array of shape (k, 0) where k is the number of clusters</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    x = np.minimum(clusters[:, 0], box[0])</span><br><span class="line">    y = np.minimum(clusters[:, 1], box[1])</span><br><span class="line">    if np.count_nonzero(x == 0) &gt; 0 or np.count_nonzero(y == 0) &gt; 0:</span><br><span class="line">        raise ValueError(&quot;Box has no area&quot;)    # 如果报这个错，可以把这行改成pass即可</span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>intersection = x * y
+box_area = box[0] * box[1]
+cluster_area = clusters[:, 0] * clusters[:, 1]
+ 
+iou_ = intersection / (box_area + cluster_area - intersection)
+ 
+return iou_
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">def avg_iou(boxes, clusters):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    Calculates the average Intersection over Union (IoU) between a numpy array of boxes and k clusters.</span><br><span class="line">    :param boxes: numpy array of shape (r, 2), where r is the number of rows</span><br><span class="line">    :param clusters: numpy array of shape (k, 2) where k is the number of clusters</span><br><span class="line">    :return: average IoU as a single float</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    return np.mean([np.max(iou(boxes[i], clusters)) for i in range(boxes.shape[0])])</span><br><span class="line"></span><br><span class="line">def translate_boxes(boxes):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    Translates all the boxes to the origin.</span><br><span class="line">    :param boxes: numpy array of shape (r, 4)</span><br><span class="line">    :return: numpy array of shape (r, 2)</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    new_boxes = boxes.copy()</span><br><span class="line">    for row in range(new_boxes.shape[0]):</span><br><span class="line">        new_boxes[row][2] = np.abs(new_boxes[row][2] - new_boxes[row][0])</span><br><span class="line">        new_boxes[row][3] = np.abs(new_boxes[row][3] - new_boxes[row][1])</span><br><span class="line">    return np.delete(new_boxes, [0, 1], axis=1)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def kmeans(boxes, k, dist=np.median):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    Calculates k-means clustering with the Intersection over Union (IoU) metric.</span><br><span class="line">    :param boxes: numpy array of shape (r, 2), where r is the number of rows</span><br><span class="line">    :param k: number of clusters</span><br><span class="line">    :param dist: distance function</span><br><span class="line">    :return: numpy array of shape (k, 2)</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    rows = boxes.shape[0]</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>distances = np.empty((rows, k))
+last_clusters = np.zeros((rows,))
+ 
+np.random.seed()
+ 
+# the Forgy method will fail if the whole array contains the same rows
+clusters = boxes[np.random.choice(rows, k, replace=False)]
+ 
+while True:
+    for row in range(rows):
+        distances[row] = 1 - iou(boxes[row], clusters)
+ 
+    nearest_clusters = np.argmin(distances, axis=1)
+ 
+    if (last_clusters == nearest_clusters).all():
+        break
+ 
+    for cluster in range(k):
+        clusters[cluster] = dist(boxes[nearest_clusters == cluster], axis=0)
+ 
+    last_clusters = nearest_clusters
+ 
+return clusters
+</code></pre>
+<p>if <strong>name</strong> &#x3D;&#x3D; ‘<strong>main</strong>‘:<br>    a &#x3D; np.array([[1, 2, 3, 4], [5, 7, 6, 8]])<br>    print(translate_boxes(a))</p>
+<p>运行：clauculate_anchors.py</p>
+<p>会调用 kmeans.py 聚类生成新anchors的文件</p>
+<p>程序如下：</p>
+<p>需要更改第 9 、13行文件路径 以及 第 16 行标注类别名称</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">FILE_ROOT = &quot;D:\Testcode\yolov5-5.0\VOCData/&quot;     # 根路径</span><br><span class="line">ANNOTATION_ROOT = &quot;Annotations&quot;   # 数据集标签文件夹路径</span><br><span class="line">ANNOTATION_PATH = FILE_ROOT + ANNOTATION_ROOT</span><br><span class="line"></span><br><span class="line">ANCHORS_TXT_PATH = &quot;D:\Testcode\yolov5-5.0\VOCData/anchors.txt&quot;   #anchors文件保存位置</span><br><span class="line"></span><br><span class="line">CLUSTERS = 9</span><br><span class="line">CLASS_NAMES = [&#x27;victory&#x27;]   #类别名称</span><br><span class="line"></span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"></span><br><span class="line"># 根据标签文件求先验框</span><br><span class="line"></span><br><span class="line">import os</span><br><span class="line">import numpy as np</span><br><span class="line">import xml.etree.cElementTree as et</span><br><span class="line">from kmeans import kmeans, avg_iou</span><br><span class="line"></span><br><span class="line">FILE_ROOT = &quot;D:/yolov5-5/VOCData/&quot;     # 根路径</span><br><span class="line">ANNOTATION_ROOT = &quot;Annotations&quot;   # 数据集标签文件夹路径</span><br><span class="line">ANNOTATION_PATH = FILE_ROOT + ANNOTATION_ROOT</span><br><span class="line"></span><br><span class="line">ANCHORS_TXT_PATH = &quot;D:/yolov5-5/VOCData/anchors.txt&quot;   #anchors文件保存位置</span><br><span class="line">CLUSTERS = 9</span><br><span class="line">CLASS_NAMES = [&#x27;victory&#x27;]   #类别名称</span><br><span class="line"></span><br><span class="line">def load_data(anno_dir, class_names):</span><br><span class="line">    xml_names = os.listdir(anno_dir)</span><br><span class="line">    boxes = []</span><br><span class="line">    for xml_name in xml_names:</span><br><span class="line">        xml_pth = os.path.join(anno_dir, xml_name)</span><br><span class="line">        tree = et.parse(xml_pth)</span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>    width = float(tree.findtext(&quot;./size/width&quot;))
+    height = float(tree.findtext(&quot;./size/height&quot;))
+ 
+    for obj in tree.findall(&quot;./object&quot;):
+        cls_name = obj.findtext(&quot;name&quot;)
+        if cls_name in class_names:
+            xmin = float(obj.findtext(&quot;bndbox/xmin&quot;)) / width
+            ymin = float(obj.findtext(&quot;bndbox/ymin&quot;)) / height
+            xmax = float(obj.findtext(&quot;bndbox/xmax&quot;)) / width
+            ymax = float(obj.findtext(&quot;bndbox/ymax&quot;)) / height
+ 
+            box = [xmax - xmin, ymax - ymin]
+            boxes.append(box)
+        else:
+            continue
+return np.array(boxes)
+</code></pre>
+<p>if <strong>name</strong> &#x3D;&#x3D; ‘<strong>main</strong>‘:</p>
+<pre><code>anchors_txt = open(ANCHORS_TXT_PATH, &quot;w&quot;)
+ 
+train_boxes = load_data(ANNOTATION_PATH, CLASS_NAMES)
+count = 1
+best_accuracy = 0
+best_anchors = []
+best_ratios = []
+ 
+for i in range(10):      ##### 可以修改，不要太大，否则时间很长
+    anchors_tmp = []
+    clusters = kmeans(train_boxes, k=CLUSTERS)
+    idx = clusters[:, 0].argsort()
+    clusters = clusters[idx]
+    # print(clusters)
+ 
+    for j in range(CLUSTERS):
+        anchor = [round(clusters[j][0] * 640, 2), round(clusters[j][1] * 640, 2)]
+        anchors_tmp.append(anchor)
+        print(f&quot;Anchors:&#123;anchor&#125;&quot;)
+ 
+    temp_accuracy = avg_iou(train_boxes, clusters) * 100
+    print(&quot;Train_Accuracy:&#123;:.2f&#125;%&quot;.format(temp_accuracy))
+ 
+    ratios = np.around(clusters[:, 0] / clusters[:, 1], decimals=2).tolist()
+    ratios.sort()
+    print(&quot;Ratios:&#123;&#125;&quot;.format(ratios))
+    print(20 * &quot;*&quot; + &quot; &#123;&#125; &quot;.format(count) + 20 * &quot;*&quot;)
+ 
+    count += 1
+ 
+    if temp_accuracy &gt; best_accuracy:
+        best_accuracy = temp_accuracy
+        best_anchors = anchors_tmp
+        best_ratios = ratios
+ 
+anchors_txt.write(&quot;Best Accuracy = &quot; + str(round(best_accuracy, 2)) + &#39;%&#39; + &quot;\r\n&quot;)
+anchors_txt.write(&quot;Best Anchors = &quot; + str(best_anchors) + &quot;\r\n&quot;)
+anchors_txt.write(&quot;Best Ratios = &quot; + str(best_ratios))
+anchors_txt.close()
+</code></pre>
+<p>会生成anchors文件。如果生成文件为空，重新运行即可。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/5dfe0a74113d4aed83de4afdb022d374.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p>第二行 Best Anchors 后面需要用到。</p>
+<p>3.2 修改模型配置文件</p>
+<p>选择一个模型，在yolov5目录下的model文件夹下是模型的配置文件，有n、s、m、l、x版本，逐渐增大（随着架构的增大，训练时间也是逐渐增大）。</p>
+<p>这里放一些官方数据：GitHub - ultralytics&#x2F;yolov5</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/b0c40f5cfa1d4cdab9fdc86d24b3ddb4.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/467675904cc04718b91f1dcef5bad5b2.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p>这里选用 yolov5m.yaml</p>
+<p>使用记事本打开 yolov5m.yaml。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/5c6e18c9d96d43b7854b265b3c9052e7.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/5e4d63e0a08f4de7b8d9f1bdaecd882a.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p>这里我们需要修改两个参数。<br>把 nc：后面改成自己的标注类别数<br>修改anchors，根据 anchors.txt 中的 Best Anchors 修改，需要取整（四舍五入、向上、向下都可以）。<br>保持yaml中的anchors格式不变，按顺序一对一即可，比如我这里的anchors.txt紫色部分对应</p>
+<p>着yolov5m.yaml的紫色部分，anchors.txt蓝色部分对应着yolov5m.yaml的蓝色部分。</p>
+<p>五. 模型训练</p>
+<ol>
+<li>开始训练<br>打开yolov5 目录下的 train.py 程序，一般有七个参数可以留意：weights：权重文件路径 cfg：存储模型结构的配置文件 data：存储训练、测试数据的文件 epochs：指的就是训练过程中整个数据集将被迭代多少次 batch-size：一次看完多少张图片才进行权重更新，梯度下降的mini-batch  img-size：输入图片宽高 device：cuda device, i.e. 0 or 0,1,2,3 or cpu选择使用GPU还是CPU（这里我选择使用device0即为GPU），</li>
+</ol>
+<p>其它参数解释：rect：进行矩形训练、 resume：恢复最近保存的模型开始训练、 nosave：仅保存最终checkpoint、 notest：仅测试最后的epoch、evolve：进化超参数、  cache-images：缓存图像以加快训练速度、 adam：使用adam优化、 multi-scale：多尺度训练、 single-cls：单类别的训练集。</p>
+<p>步骤11——训练命令如下：首先进入pytorch环境，进入yolov5文件夹，运行指令：python train.py –weights weights&#x2F;yolov5s.pt  –cfg models&#x2F;yolov5s.yaml  –data data&#x2F;myvoc.yaml –epoch 233 –batch-size 8 –img 640   –device 0 ，其中device 0：意为使用GPU进行训练 epoch 200 ：意为训练200次，batch-size 8：意为训练8张图片后进行权重更新 device cpu：意为使用CPU训练。</p>
+<p>python train.py –weights weights&#x2F;yolov5s.pt  –cfg models&#x2F;yolov5s.yaml  –data data&#x2F;myvoc.yaml –epoch 233 –batch-size 8 –img 640   –device 0<br>2. 训练过程</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/c919984c848142399c0f570c1a2aa78c.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p> <img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/0912dc6446bf47979581d94fc646e0c6.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p>训练好的模型会被保存在 yolov5 目录下的 runs&#x2F;train&#x2F;weights&#x2F;expxx下。</p>
+<ol start="3">
+<li>训练时间</li>
+</ol>
+<p>本次训练对象为标注的118张手势图片，分别使用GPU训练了233次，耗时约为1.7小时。</p>
+<p>这里打开了我的电脑的增强模式，风扇疾速运转中————-呼呼吹</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/1bd3ff1be49849dca5ff09b2544583e4.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_19,color_FFFFFF,t_70,g_se,x_16"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/04cd605de59d434d964364d98b501251.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p>训练过程pycharm可视化</p>
+<ol start="4">
+<li>相关问题</li>
+</ol>
+<p>报错1：页面太小，无法完成操作——解决方案：由于虚拟内存不足，我设置了一下电脑的虚拟内存然后就可以了，或者降低线程 –workers (默认是8) ，调小 –batch-size，降低 –epoch。</p>
+<p>报错2：训练过程中出现 cuda out of memory error ——解决方案：由于内存满了，减小batch-size ，同时降低 –epochs。然后降低线程 –workers (默认是8)同上一步。</p>
+<p>报错3：运行detect.py时报错AttributeError: ‘NoneType’ object has no attribute ‘find’ ——解决方案；由于图片的指定路径出现错误或者路径是正确的，但是路径设置中的”\”无法被识别，需要”&#x2F;”，如\data\images无法被正确识别，而data&#x2F;images则可以被正确识别。</p>
+<p>五. 训练可视化</p>
+<p>由于我使用的是pycharm，在训练的时候终端可以可视化训练过程</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/88d3be59430b46908d8b620f9c5556f3.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p>六. 测试效果</p>
+<p>这里刚刚训练出的最好的模型 best.pt 来测试，在yolov5目录下的runs&#x2F;train&#x2F;exp44&#x2F;weights&#x2F;best.pt（训练的人脸模型）和runs&#x2F;train&#x2F;exp62&#x2F;weights&#x2F;best.pt（训练的手势模型）如要进行图片或者视频数据流的识别在terminal输入python detect.py –weights runs&#x2F;train&#x2F;exp44&#x2F;weights&#x2F;best.pt –source ..&#x2F;data&#x2F;images（或videos）&#x2F;123.jpg（123.mp4）即可，如要进行实时摄像头的人脸或者手势识别，则需要修改detect.py第154行的代码为default&#x3D;’0’</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/9dcc2de87d62437cb2637275986bfbdf.png"></p>
+<p>识别结果如下：在测试过程中我留意到由于自己标注的数据集数量比较少以及显卡性能有限的原因batchsize（单次输入神经网络图片的数量即训练x张图片后进行权重更新）不能设置为8以上的大数值，这会导致报错ERROR：cuda out of memory（显卡内存不足）</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/bcaa2ba8e3704585925ffea3209c9eb0.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAd2NjbGxsbGxsbGxsbA==,size_17,color_FFFFFF,t_70,g_se,x_16"></p>
+<p>实时检测识别效果窗口</p>
+<p>结果分析：本次识别中，进行图片和数据流的人脸识别和手势识别效果还行，但在进行实时识别的时候我发现，因为数据集样本数量不够多，少于推荐训练的1500张图片epochs（训练）次数不是特别多次，以及由于显卡内存不足导致batchsize的阈值设置的受限，在识别手势的过程中，比V形手势的时候置信度较高（高于0.85），其余手势也会被识别到，但是其置信度比较低。故下一步我将对yolov5的边框的准确度、标签平滑等方向——做出进一步的优化，以实现高准确率边框，高置信度的人脸识别和手势检测。</p>
+<p>七、感谢以下文章提供的参考<br>(63条消息) 手把手教你使用Yolov5制作并训练自己的数据集_是七叔呀的博客-CSDN博客_yolov5自己制作数据集<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_46378271/article/details/120872132?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522164758521116780264033398%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&amp;request_id=164758521116780264033398&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_ecpm_v1~rank_v31_ecpm-1-120872132.142%5Ev2%5Epc_search_result_cache,143%5Ev4%5Econtrol&amp;utm_term=%E3%80%90%E5%B0%8F%E7%99%BDCV%E3%80%91%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E7%94%A8YOLOv5%E8%AE%AD%E7%BB%83%E8%87%AA%E5%B7%B1%E7%9A%84%E6%95%B0%E6%8D%AE%E9%9B%86%EF%BC%88%E4%BB%8EWindows%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E5%88%B0%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%EF%BC%89+(icode9.com)&amp;spm=1018.2226.3001.4187">https://blog.csdn.net/m0_46378271/article/details/120872132?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522164758521116780264033398%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&amp;request_id=164758521116780264033398&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_ecpm_v1~rank_v31_ecpm-1-120872132.142%5Ev2%5Epc_search_result_cache,143%5Ev4%5Econtrol&amp;utm_term=%E3%80%90%E5%B0%8F%E7%99%BDCV%E3%80%91%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E7%94%A8YOLOv5%E8%AE%AD%E7%BB%83%E8%87%AA%E5%B7%B1%E7%9A%84%E6%95%B0%E6%8D%AE%E9%9B%86%EF%BC%88%E4%BB%8EWindows%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E5%88%B0%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%EF%BC%89+%28icode9.com%29&amp;spm=1018.2226.3001.4187</a></p>
+<p>YOLOv5超详细的入门级教程（训练篇）——训练自己的数据集 - 知乎 (zhihu.com)<br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/448525505">https://zhuanlan.zhihu.com/p/448525505</a><br>训练自定义数据 ·ultralytics&#x2F;yolov5 Wiki (github.com)<br><a target="_blank" rel="noopener" href="https://github.com/ultralytics/yolov5/wiki/Train-Custom-Data">https://github.com/ultralytics/yolov5/wiki/Train-Custom-Data</a><br>————————————————<br>版权声明：本文为CSDN博主「wccllllllllll」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。<br>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/blink182007/article/details/123569332">https://blog.csdn.net/blink182007/article/details/123569332</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">AlanWu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2022/04/01/yolome/">http://example.com/2022/04/01/yolome/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">AlanWu的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%A7%86%E8%A7%89%E6%A3%80%E6%B5%8B-tensorflow-ai-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%EF%BC%8Cencrypted/">深度学习 视觉检测 tensorflow ai 计算机视觉，encrypted</a></div><div class="post_share"><div class="social-share" data-image="http://mms2.baidu.com/it/u=1541053178,3942721378&amp;fm=253&amp;app=138&amp;f=JPEG&amp;fmt=auto&amp;q=75?w=474&amp;h=251" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/04/06/sony1/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic3.zhimg.com/80/v2-05109d3d7158aa8a6dd0aa8bf74c07bc_r.jpg" onerror="onerror=null;src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">索尼微单编年史</div></div></a></div><div class="next-post pull-right"><a href="/2022/04/01/hexo%20command/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic1.16pic.com%2F00%2F01%2F33%2F16pic_133629_b.jpg&amp;refer=http%3A%2F%2Fpic1.16pic.com&amp;app=2002&amp;size=f9999,10000&amp;q=a80&amp;n=0&amp;g=0n&amp;fmt=auto?sec=1651475751&amp;t=a2d265b9971c3bb8722e6258af9662d6" onerror="onerror=null;src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Hexo常用命令</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic3.zhimg.com/80/v2-741506174e170418d38dba06563b41b7_720w.jpg?source=1940ef5c" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">AlanWu</div><div class="author-info__description">不必为昨天的泪而弄湿今天的阳光</div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://blog.csdn.net/blink182007?type=blog"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://graph.qq.com/oauth2.0/show?which=Login&amp;display=pc&amp;response_type=code&amp;client_id=101559500&amp;redirect_uri=https:%2F%2Fcpo.qq.com%2Fconnect%2Fcallback&amp;scope=get_user_info" target="_blank" title="QQ"><i class="iconfont icon-qq"></i></a><a class="social-icon" href="https://filehelper.weixin.qq.com" target="_blank" title="微信"><i class="iconfont icon-weixin"></i></a><a class="social-icon" href="https://ddys2.me" target="_blank" title="低端影视"><i class="iconfont icon-dianyingyuan"></i></a><a class="social-icon" href="https://www.chaoxing.com" target="_blank" title="超星学习通"><i class="iconfont icon-menhuchangyongyingyongxitongICONyuande_chaoxingjiaoxuepingtai"></i></a><a class="social-icon" href="https://blog.csdn.net/blink182007?type=blog" target="_blank" title="追随我CSDN"><i class="iconfont icon-csdn"></i></a><a class="social-icon" href="https://www.cnki.net" target="_blank" title="中国知网"><i class="iconfont icon-zhiwang"></i></a><a class="social-icon" href="https://v.qq.com/" target="_blank" title="腾讯视频"><i class="iconfont icon-tengxunvideo"></i></a><a class="social-icon" href="http://www.4399.com/" target="_blank" title="4399小游戏"><i class="iconfont icon-youxiwang"></i></a><a class="social-icon" href="https://www.iqiyi.com/" target="_blank" title="爱奇艺"><i class="iconfont icon-aiqiyi"></i></a><a class="social-icon" href="https://www.baidu.com" target="_blank" title="百度一下"><i class="iconfont icon-icon_baidulogo"></i></a><a class="social-icon" href="https://www.zhihu.com/people/zhao-mi-nian" target="_blank" title="知乎"><i class="iconfont icon-zhihu"></i></a><a class="social-icon" href="https://weibo.com/u/7191404064" target="_blank" title="新浪微博"><i class="iconfont icon-xinlangweibo"></i></a><a class="social-icon" href="https://www.bilibili.com" target="_blank" title="哔哩哔哩"><i class="iconfont icon-bilibili"></i></a><a class="social-icon" href="https://web.shanbay.com/web/users/243370675/zone" target="_blank" title="扇贝单词"><i class="iconfont icon-kaoyanyingyu"></i></a><a class="social-icon" href="https://www.iqihang.com/ark/record/11098/3726/1334926/158134587/3/72/2/3278" target="_blank" title="考研数学"><i class="iconfont icon-Group45611"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到夜之城</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/02/13/Bert/" title="Bert模型MRPC任务从本地到云端部署踩坑记录"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic3.zhimg.com/v2-f654f0628e002434f1464b36c61667d3_b.jpg" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="Bert模型MRPC任务从本地到云端部署踩坑记录"/></a><div class="content"><a class="title" href="/2023/02/13/Bert/" title="Bert模型MRPC任务从本地到云端部署踩坑记录">Bert模型MRPC任务从本地到云端部署踩坑记录</a><time datetime="2023-02-12T16:50:13.481Z" title="发表于 2023-02-13 00:50:13">2023-02-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/05/15/Detectron2yolof/" title="Detectron2实战案例"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic2.zhimg.com/80/v2-30a9500b5ebf9347aae5b74404229d07_r.jpg" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="Detectron2实战案例"/></a><div class="content"><a class="title" href="/2022/05/15/Detectron2yolof/" title="Detectron2实战案例">Detectron2实战案例</a><time datetime="2022-05-15T04:17:28.771Z" title="发表于 2022-05-15 12:17:28">2022-05-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/06/sony1/" title="索尼微单编年史"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic3.zhimg.com/80/v2-05109d3d7158aa8a6dd0aa8bf74c07bc_r.jpg" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="索尼微单编年史"/></a><div class="content"><a class="title" href="/2022/04/06/sony1/" title="索尼微单编年史">索尼微单编年史</a><time datetime="2022-04-06T02:48:40.529Z" title="发表于 2022-04-06 10:48:40">2022-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/01/yolome/" title="初学入门YOLOv5手势识别之制作并训练自己的数据集"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="http://mms2.baidu.com/it/u=1541053178,3942721378&amp;fm=253&amp;app=138&amp;f=JPEG&amp;fmt=auto&amp;q=75?w=474&amp;h=251" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="初学入门YOLOv5手势识别之制作并训练自己的数据集"/></a><div class="content"><a class="title" href="/2022/04/01/yolome/" title="初学入门YOLOv5手势识别之制作并训练自己的数据集">初学入门YOLOv5手势识别之制作并训练自己的数据集</a><time datetime="2022-04-01T03:53:45.117Z" title="发表于 2022-04-01 11:53:45">2022-04-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/01/hexo%20command/" title="Hexo常用命令"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic1.16pic.com%2F00%2F01%2F33%2F16pic_133629_b.jpg&amp;refer=http%3A%2F%2Fpic1.16pic.com&amp;app=2002&amp;size=f9999,10000&amp;q=a80&amp;n=0&amp;g=0n&amp;fmt=auto?sec=1651475751&amp;t=a2d265b9971c3bb8722e6258af9662d6" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="Hexo常用命令"/></a><div class="content"><a class="title" href="/2022/04/01/hexo%20command/" title="Hexo常用命令">Hexo常用命令</a><time datetime="2022-04-01T03:53:45.108Z" title="发表于 2022-04-01 11:53:45">2022-04-01</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By AlanWu</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">本地搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="/js/search/local-search.js"></script><script>var endLoading = function () {
+  document.body.style.overflow = 'auto';
+  document.getElementById('loading-box').classList.add("loaded")
+}
+window.addEventListener('load',endLoading)</script><div class="js-pjax"><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://twikoo-5li1em5hj-wcelll.vercel.app/',
+      region: '',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.vemoji)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo-5li1em5hj-wcelll.vercel.app/',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      document.getElementById('twikoo-count').innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div><div class="aplayer no-destroy" data-id="509265479" data-server="netease" data-type="playlist" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-preload="none" data-autoplay="false" muted></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="true"></script><script src="//code.tidio.co/9kuxvjbgybmbb3e1bz7iv4n9y3y5crqm.js" async="async"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  typeof preloader === 'object' && preloader.initLoading()
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script>var endLoading = function () {
+  document.body.style.overflow = 'auto';
+  document.getElementById('loading-box').classList.add("loaded")
+}
+window.addEventListener('load',endLoading)</script></body></html><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script type="text/javascript" src="/js/crash_cheat.js"></script>

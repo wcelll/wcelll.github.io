@@ -1,0 +1,462 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>目标检测：单阶段YOLOv5及其相关应用介绍 | AlanWu的博客</title><meta name="keywords" content="opencv，deep Learning"><meta name="author" content="AlanWu"><meta name="copyright" content="AlanWu"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="​                                                                                 (jk少女日常的yolov5检测识别)前言——背景简介（我和yolov5从此结缘）2021年底我和我们大学的班导师以及几位其他班级的同学一起开始了yolo系列视觉检测框架的学习，我们从项目的开始到现在也不过才几个月而已，其实我们虽然">
+<meta property="og:type" content="article">
+<meta property="og:title" content="目标检测：单阶段YOLOv5及其相关应用介绍">
+<meta property="og:url" content="http://example.com/2022/03/23/yolo/index.html">
+<meta property="og:site_name" content="AlanWu的博客">
+<meta property="og:description" content="​                                                                                 (jk少女日常的yolov5检测识别)前言——背景简介（我和yolov5从此结缘）2021年底我和我们大学的班导师以及几位其他班级的同学一起开始了yolo系列视觉检测框架的学习，我们从项目的开始到现在也不过才几个月而已，其实我们虽然">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img0.baidu.com/it/u=3756588693,3502079798&fm=253&fmt=auto&app=138&f=GIF?w=499&h=298">
+<meta property="article:published_time" content="2022-03-23T07:05:39.010Z">
+<meta property="article:modified_time" content="2023-11-21T11:25:24.178Z">
+<meta property="article:author" content="AlanWu">
+<meta property="article:tag" content="opencv，deep Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img0.baidu.com/it/u=3756588693,3502079798&fm=253&fmt=auto&app=138&f=GIF?w=499&h=298"><link rel="shortcut icon" href="https://pic2.zhimg.com/80/v2-90c7858a0c40298cc6da5a4e7ac671de_xl.jpg"><link rel="canonical" href="http://example.com/2022/03/23/yolo/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '目标检测：单阶段YOLOv5及其相关应用介绍',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-11-21 19:25:24'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><link rel="stylesheet" href="APlayer.min.css"><div id="aplayer"></div><script src="https://cdn.jsdelivr.net/gh/radium-bit/res@master/live2d/autoload.js" async></script><script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js" async></script><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/iconfont.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zyoushuo/Blog@latest/hexo/css/loading_style_1.css" ><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zyoushuo/Blog@latest/hexo/css/loading_style_2.css" ><meta name="generator" content="Hexo 6.1.0"></head><body>
+<div id='loader'>
+    
+    <div class="outer_box">
+    <div class='loader_overlay'></div>
+    <div class='loader_cogs'>
+        <div class='loader_cogs__top'>
+            <div class='top_part'></div>
+            <div class='top_part'></div>
+            <div class='top_part'></div>
+            <div class='top_hole'></div>
+        </div>
+        <div class='loader_cogs__left'>
+            <div class='left_part'></div>
+            <div class='left_part'></div>
+            <div class='left_part'></div>
+            <div class='left_hole'></div>
+        </div>
+        <div class='loader_cogs__bottom'>
+            <div class='bottom_part'></div>
+            <div class='bottom_part'></div>
+            <div class='bottom_part'></div>
+            <div class='bottom_hole'></div>
+        </div>
+        <p style="text-align:center">&nbsp;&nbsp;&nbsp;loading...</p>
+    </div>
+    </div>
+    
+</div>
+    
+<script>
+    var endLoading = function () {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loader').classList.add("loading");
+    }
+    window.addEventListener('load',endLoading);
+</script>
+<div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic3.zhimg.com/80/v2-741506174e170418d38dba06563b41b7_720w.jpg?source=1940ef5c" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li><li><a class="site-page child" href="/ChatGPT/"><i class="fa-fw fa fa-rocket"></i><span> ChatGPT</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-american-sign-language-interpreting"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/musics/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://img0.baidu.com/it/u=3756588693,3502079798&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=GIF?w=499&amp;h=298')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">AlanWu的博客</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li><li><a class="site-page child" href="/ChatGPT/"><i class="fa-fw fa fa-rocket"></i><span> ChatGPT</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-american-sign-language-interpreting"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/musics/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">目标检测：单阶段YOLOv5及其相关应用介绍</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-03-23T07:05:39.010Z" title="发表于 2022-03-23 15:05:39">2022-03-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-21T11:25:24.178Z" title="更新于 2023-11-21 19:25:24">2023-11-21</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="目标检测：单阶段YOLOv5及其相关应用介绍"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic1.zhimg.com/80/v2-043bc718ba401c54f9f288d94fc075ec_720w.jpg"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic2.zhimg.com/80/v2-93a69bb261545aea8069f7c9a1108931_720w.jpg"></p>
+<p>​                                                                                 (jk少女日常的yolov5检测识别)<br><strong>前言——背景简介（我和yolov5从此结缘）</strong><br>2021年底我和我们大学的班导师以及几位其他班级的同学一起开始了yolo系列视觉检测框架的学习，我们从项目的开始到现在也不过才几个月而已，其实我们虽然只是学习到了一些非常基础的视觉知识，比如我们大三选修的一门课程opencv视觉基础课程，虽然是计算机里边的视觉检测部分，但是对于我们这群视觉小白（好吧视觉小白其实是我自己）时过境迁，在AI方面我还是小学生，在社会的飞速发展中，视觉检测神经网络领域里边的Yolo早已经脱胎换骨从V1发展到了V5，并有各种衍生和优化版本譬如yolox和由中国科学院大学牵头搞出来的yolof。我们津津乐道它的名字是You only look once的简写，原意“你只看一遍”是为了区分看“两遍”的faster-rcnn等二阶段模型，其简写Yolo又寓意着另一句谚语”You only live once”，生命只有一次。人生的面，见一面少一面，好好把握当下比什么都重要。</p>
+<span id="more"></span>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/yolo/u=3064032978,2763916980&fm=253&fmt=auto&app=138&f=JPEG.jpeg"><br>充满噱头的除了性能、名字外甚至还有作者本身，作者年初时宣布因为对技术滥用的担忧放弃视觉研究了，颇有高人之风。而且明明是个大胡子，个人网站却是满满粉色独角兽的萌妹风格。写的论文中，为了突出速度之快，甚至故意把图画到坐标轴外面去了。<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg-blog.csdnimg.cn%2F2020110315301217.png%3Fx-oss-process%3Dimage%2Fwatermark%2Ctype_ZmFuZ3poZW5naGVpdGk%2Cshadow_10%2Ctext_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3d1emhpaGFvNzc4OA%3D%3D%2Csize_16%2Ccolor_FFFFFF%2Ct_70&refer=http%3A%2F%2Fimg-blog.csdnimg.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1650554578&t=4618cbf3b833e94cb7a2a8e0e51e95e1"><br>机器视觉任务，常见的有分类、检测、分割。而Yolo正是检测中的佼佼者，在工业界，Yolo兼顾精度和速度，往往是大家的首选。<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic1.zhimg.com%2Fv2-50b4a2b8e1529817bf6bb6de0fdf4c2d_1440w.jpg%3Fsource%3D172ae18b&refer=http%3A%2F%2Fpic1.zhimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1650554578&t=e23da028b4e36ecf6001bdb744da65eb"><br><strong>实际效果</strong><br>V5的效果也是非常不错，这里给到官方模型的一些数据：<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/yolo/src=http%253A%252F%252Fcdn.zhuanzhi.ai%252Fimages%252Fwx%252F4bb7ea3df6427619e23cacf33cdb06f9&refer=http%253A%252F%252Fcdn.zhuanzhi.jpeg"><br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic4.zhimg.com%2Fv2-ec8f70e8983cd0a121bc4b1917dc36d7_1440w.jpg%3Fsource%3D172ae18b&refer=http%3A%2F%2Fpic4.zhimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1650554775&t=05a9ab0c62e63d57ea7c049f9c912084"><br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fi0.hdslb.com%2Fbfs%2Farchive%2F6dbfc6415706f299f6163943c71fec91f027cd1d.jpg&refer=http%3A%2F%2Fi0.hdslb.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1650554811&t=6209234606d5189b2a4ba79240f5af4e"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/yolo/u=3807873174,2984490567&fm=253&fmt=auto&app=138&f=PNG.png"></p>
+<p>其实，yolov4刚出来的时候，大家还对名字争议了一番。毕竟原作者已经弃坑，新作看上去又是一个trick集合。马上yolov5出现之后，似乎对v4的质疑就消失了，因为v5这个名字起的似乎更离谱了。这里就不讨论名字争议了。</p>
+<p><strong>原理</strong><br>作为一阶段end2end的检测算法代表作，我们简单回顾一下Yolo从V1到V5的主要改进措施，当然backbone也一直在进化着。</p>
+<p>v1: 划分网格负责检测，confidence loss<br>v2: 加入k-means的anchor，两阶段训练，全卷积网络<br>v3: FPN多尺度检测<br>v4: spp，mish激活函数，数据增强mosaic\mixup，giou损失函数<br>v5: 对模型大小灵活控制，hardswish激活函数，数据增强<br>v1&#x2F;v2因为对小目标检测效果不佳，在v3中加入了多尺度检测。v3大概可以比作iphone界的iphone6，是前后代广受好评的大成者，至今仍活跃在一线，“等等党永远不亏”。Yolov4把整个流程中可能进行的优化都梳理和尝试了了一遍，并找到了各个排列组合中的最好效果。v5可以灵活的控制从10+M到200+M的模型，其小模型非常惊艳。<br>v3到v5的整体网络图相差不多，可以清晰的看到：模型从三个不同尺度分别对大小不同的物体有重点的进行检测。<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/yolo/u=4109089220,341220966&fm=253&fmt=auto&app=138&f=PNG.png"></p>
+<p><strong>细节：数据增强和预处理</strong><br>由于模型需要图片尺寸相同，因此可以采用resize、padding resize和letterbox的方法。letterbox训练的时候不用，只是在推理时候用。数据增强(data augmentation)是提升模型泛化能力的重要手段。</p>
+<h3 id="传统数据增强方式有随机翻转、旋转、裁剪、变形缩放、添加噪声、颜色扰动等等。"><a href="#传统数据增强方式有随机翻转、旋转、裁剪、变形缩放、添加噪声、颜色扰动等等。" class="headerlink" title="传统数据增强方式有随机翻转、旋转、裁剪、变形缩放、添加噪声、颜色扰动等等。"></a><em>传统数据增强方式有随机翻转、旋转、裁剪、变形缩放、添加噪声、颜色扰动等等。</em></h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/8692b5243cf84fbebd2733111803fd9e.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5paH54Gr5Yaw57OW55qE56GF5Z-65bel5Z2K,size_14,color_FFFFFF,t_70,g_se,x_16"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/b9dd35be99c74842bf736fc4d4829c59.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5paH54Gr5Yaw57OW55qE56GF5Z-65bel5Z2K,size_15,color_FFFFFF,t_70,g_se,x_16"></p>
+<p> Random Erasing Data Augmentation（随机擦除数据增强）</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/img_convert/a3545bae1db9486cb49dd10e9f7335ce.png"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/img_convert/8be8d885ed38a171d5c3022c860fdadb.png"></p>
+<p>随机的删除图片中部分区域，增强模型的泛化能力。</p>
+<p>RandAugment（随机增强）<br>随机增强的意思是提前列举出几种数据增强的方式，如下图所示：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/img_convert/391be61c63a3f253c56e8cf6d4808ce3.png"></p>
+<p>混合数据增强Mixup、Cutout、CutMix </p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/img_convert/38061f0535871d1806a024be1a756c8f.png"></p>
+<p>Mixup是将两张图像以一定的概率凑到了一起，例如图中猫和狗各占一半，会显示一半像猫一半像狗；</p>
+<p>Cutout是只一张图，但是随机选择一块区域进行丢弃；</p>
+<p>CutMix则整合两种方法，仍然是两种图像各自占一定概率，然后丢弃一块区域的像素，用其中一张图像进行填充。</p>
+<p> <strong>Mosaic Data Augmentation（马赛克数据增强）</strong></p>
+<p>那么问题来了——什么是马赛克数据增强呢？<br>该方法被应用到YOLO-V4当中扩充数据！</p>
+<p>简言之马赛克数据增强就是把原来的四幅图组在一起——Mosaic借鉴了CutMix增强的方法，只不过本方法采用了4张图片，对其进行了随机裁剪、缩放、旋转等操作，合成1张图像，这种方式达到了如下的效果：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/img_convert/0d23637d4d18d3fd10d10fba72135e64.png"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/img_convert/c4deb0c356b72346bce0c7a14143f4de.png"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/img_convert/24e6bb7e9aa9ee21c539d9a2311d5a83.png"></p>
+<p>基本原理</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/e5e30c79d46841559c1f5afe84a9d9f2.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5paH54Gr5Yaw57OW55qE56GF5Z-65bel5Z2K,size_14,color_FFFFFF,t_70,g_se,x_16"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/217ac1df147b43fd9ea187e099882a05.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5paH54Gr5Yaw57OW55qE56GF5Z-65bel5Z2K,size_16,color_FFFFFF,t_70,g_se,x_16"></p>
+<p>（1）扩充了数据集的数量</p>
+<p>（2）增加了小样本的数量：把大样本随机放缩成了小样本，因此增加了小样本的数量。</p>
+<p>（3）小样本更小：由于采用随机放缩，合并后，导致小样本的尺寸更小。</p>
+<p> <strong>YOLO V5 - ultralytics代码解析</strong><br>使能马赛克数据增强<br>超参数：hyp[‘mosaic’]</p>
+<p>load_mosaic(self, index)<br>def load_mosaic(self, index)</p>
+<p>{undefined</p>
+<pre><code>    # 该函数会4张图片，先进行随机增强，然后合并成一张图片。
+</code></pre>
+<p>}</p>
+<p>flip: 翻转<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pica.zhimg.com/v2-8ba96ab2aa5753d0ad851ed1fa6e0a2e_1440w.jpg?source=172ae18b"></p>
+<p>perspective：仿射变换<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/20210903154515647.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBAbHp6enp6em0=,size_20,color_FFFFFF,t_70,g_se,x_16"></p>
+<p>hsv augment：颜色变换<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/03f0170479a94e39881de89e6d79e788.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3BlbnRpdW1DTQ==,size_16,color_FFFFFF,t_70"></p>
+<p>当然后面可以试试albumentations包里的方法。</p>
+<p>获取anchor：k-means<br>早就在机器学习中学过最基础的聚类算法k-means，没想到第一次用上是在目标检测里。果然没有免费的午餐啊，在合适的地方用上合适的算法就好。k-means的两个关键超参数是k的选择和距离的选择，所以在Yolo中的k等于n_scale（尺度，一般为3）* anchor_per_scale (每个尺度的anchor，一般也为3）。V5做了一点小小的改进：训练时自动获取。</p>
+<p>匹配anchor和网格<br>虽然讨论的时候，经常看见的都是改了哪些fancy的模型，真正写程序时比较困难的反而是这种数据前处理的pipeline。yolo的关键思想通过标记物体的中心点落在哪个网格里，就由这个网格负责检测，就是通过设置目标来实现的。</p>
+<p>1）计算这张图片所有ground truth与每一个anchor的IOU，从而得到对每一个ground truth匹配最好的anchor id。可以根据真实框和锚矿的IOU或者长宽比来选择，v4与v5中做的改进是根据宽高比来进行anchor的匹配。</p>
+<p>2）对每一个ground truth循环。找到这个anchor对应的尺度，和这个anchor对应的哪一个anchor。<br>3）模型最终输出的是三个尺度，每个尺度下每个网格带下的三个anchor对应的box。所以将标记的box也要放置到对应的grid里，对应的是三个anchor里的哪一个。根据上面找到对应grid，对应anchor，将标记的box尺寸和class 信息设置到目标里，其他设置为0。<br>另外两个改进点，一个改进点是正样本增强。通过正样本的增强可以减轻正负样本的不均衡。另一个改进点是标注框对anchor的encoding(编码方式)。从v2中引入anchor以来，一直通过如下编码方式</p>
+<p>为了解决网格的敏感性，v4的作者发现简单的编码方式就可以提高结果。</p>
+<p>x &#x3D; (logistic(in) * 2 - 0.5 + grid_x) &#x2F; grid_width<br>y &#x3D; …<br>w &#x3D; pow( logistic(in)*2, 2) * anchor &#x2F; network_width<br>h &#x3D; …</p>
+<p>模型主体</p>
+<p>（来自dabai同学）</p>
+<p>v5的模型通过类似EfficientNet的两个系数来控制模型的宽度和深度，在yaml文件的depth_multiple和width_multiple中调节。<br>Focus：是v5相对v4的改进。<br>CSPNet：跨阶段局部融合网络<br>PANet：之前FPN是把传统视觉任务的图像金字塔改进到了深度学习的特征金字塔，来自论文Path Aggregation Network for Instance Segmentation。</p>
+<p>损失函数<br>Yolo的损失函数比较惊艳，通过损失函数的设定把目标检测任务转化为一个回归任务。</p>
+<p>&#96;def build_targets(p, targets, model):</p>
+<pre><code># `***Build targets for compute_loss(), input targets(image,class,x,y,w,h)***`
+</code></pre>
+<p>​    &#96;&#96;det &#x3D; model.module.model[-1] if is_parallel(model) else model.model[-1]  # Detect() module<code>​   </code>na, nt &#x3D; det.na, targets.shape[0]  # number of anchors, targets<code>​   </code>tcls, tbox, indices, anch &#x3D; [], [], [], []<code>​   </code>gain &#x3D; torch.ones(7, device&#x3D;targets.device)  # normalized to gridspace gain<code>​   </code>ai &#x3D; torch.arange(na, device&#x3D;targets.device).float().view(na, 1).repeat(1, nt)  # same as .repeat_interleave(nt)<code>​   </code>#将targets复制3份，每份分配一个anchor编号，如0,1,2. 也就是每个anchor分配一份targets。<code> ​    targets = torch.cat((targets.repeat(na, 1, 1), ai[:, :, None]), 2)  # append anchor indices</code></p>
+<p>重要的代码块在build_targets内。</p>
+<pre><code>g = 0.5  # bias
+# 这里off表示了5个偏移，原点不动，往右、往下、往左、往上。
+# 其中坐标原点在图像的左上角，x轴往右（列），y轴往下（行）。
+off = torch.tensor([[0, 0],
+                    [1, 0], [0, 1], [-1, 0], [0, -1],  # j,k,l,m
+                    # [1, 1], [1, -1], [-1, 1], [-1, -1],  # jk,jm,lk,lm
+                    ], device=targets.device).float() * g  # offsets
+
+for i in range(det.nl):
+    #det.anchors在导入model的时候就除以了步长，因此此时anchor大小不是相对于原图，而是相对于对应特征层的尺寸
+    anchors = det.anchors[i]
+    gain[2:6] = torch.tensor(p[i].shape)[[3, 2, 3, 2]]  # xyxy gain
+
+    # Match targets to anchors
+    #这里主要是将gt的cx，cy，w,h换算到当前特征层对应的尺寸，以便和该层的anchor大小相对应
+    t = targets * gain
+    if nt:
+        # Matches
+        #这个部分是计算gt和anchor的匹配程度
+        #即w_gt/w_anchor  h_gt/h_anchor
+        r = t[:, :, 4:6] / anchors[:, None]  # wh ratio
+        #这里判断了r和1/r与model.hyp[&#39;anchor_t&#39;]的大小关系，即只有不大于这个数，也就是说gt与anchor的宽高差距不过大的时候，才认为匹配。代码中 model.hyp[&#39;anchor_t&#39;]=4
+        j = torch.max(r, 1. / r).max(2)[0] &lt; model.hyp[&#39;anchor_t&#39;]  # compare       
+        # j = wh_iou(anchors, t[:, 4:6]) &gt; model.hyp[&#39;iou_t&#39;]  # iou(3,n)=wh_iou(anchors(3,2), gwh(n,2))
+        #将满足条件的targets筛选出来。          
+        t = t[j]  # filter
+        
+        # Offsets
+        #这个部分就是扩充targets的数量，将比较targets附近的4个点，选取最近的2个点作为新targets中心，新targets的w、h使用与原targets一致，只是中心点坐标的不同。
+        gxy = t[:, 2:4]  # grid xy
+        gxi = gain[[2, 3]] - gxy  # inverse
+        j, k = ((gxy % 1. &lt; g) &amp; (gxy &gt; 1.)).T
+        l, m = ((gxi % 1. &lt; g) &amp; (gxi &gt; 1.)).T
+        j = torch.stack((torch.ones_like(j), j, k, l, m))
+        t = t.repeat((5, 1, 1))[j] #筛选后t的数量是原来t的3倍。
+        offsets = (torch.zeros_like(gxy)[None] + off[:, None])[j]
+    else:
+        t = targets[0]
+        offsets = 0
+
+    # Define
+    b, c = t[:, :2].long().T  # image, class
+    gxy = t[:, 2:4]  # grid xy
+    gwh = t[:, 4:6]  # grid wh
+    gij = (gxy - offsets) #自己加的代码，方便查看gij的分布。
+     plot_gxy(gxy=gij, scale_i=i, size=gain, flag=&#39;gij&#39;) #自己编的代码，用于查看gij的分布。
+    gij = (gxy - offsets).long() #将所有targets中心点坐标进行偏移。
+
+    gi, gj = gij.T  # grid xy indices
+
+    # Append
+    a = t[:, 6].long()  # anchor indices
+    indices.append((b, a, gj, gi))  # image, anchor, grid indices
+    tbox.append(torch.cat((gxy - gij, gwh), 1))  # box
+    anch.append(anchors[a])  # anchors
+    tcls.append(c)  # class
+
+return tcls, tbox, indices, anch`
+</code></pre>
+<p>下图是20x20的特征图上的gij的分布示意图，从图中可以看出每个targets都扩充了2个临近的targets。关于为什么扩充，我还没理解，有知道的网友欢迎留言。另外，知乎网友Ancy贝贝的理解是：之前通过筛选，去掉了一些匹配不上anchor的gt，本来正样本就比负样本少很多，经过筛选，少得更多了，所以每个gt扩充2个出来，增加正样本比例。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://images2.freesion.com/444/75/75b593c73852ed76a1013bf5ef28b5c4.png"></p>
+<pre><code># Regression
+pxy = ps[:, :2].sigmoid() * 2. - 0.5
+pwh = (ps[:, 2:4].sigmoid() * 2) ** 2 * anchors[i]
+pbox = torch.cat((pxy, pwh), 1).to(device)  # predicted box
+giou = bbox_iou(pbox.T, tbox[i], x1y1x2y2=False, CIoU=True)  # giou(prediction, target)
+lbox += (1.0 - giou).mean()  # giou loss
+</code></pre>
+<p>代码中的pxy对应bxy，ps[:, :2]对应txy。由此可知bxy的取值范围是[-0.5,1.5]。因此有可能偏移到临近的单元格内，但偏移不多，不知道作者是什么考虑的。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://images1.freesion.com/54/4c/4c332b4656f3ac2fb81f718225aebb46.png"></p>
+<p>代码中的pwh对应bwh，anchors[i]对应Pwh。因此可知bwh的范围是[0,4]*Pwh。这和前面<br>j &#x3D; torch.max(r, 1. &#x2F; r).max(2)[0] &lt; model.hyp[‘anchor_t’] # model.hyp[‘anchor_t’]&#x3D;4 是一致的。</p>
+<p>OBJECTNESS<br>tobj[b, a, gj, gi] &#x3D; (1.0 - model.gr) + model.gr * giou.detach().clamp(0).type(tobj.dtype) # giou ratio<br>此处 tobj[b, a, gj, gi]用giou（真实的是ciou）取代1，代表该点对应置信度。为什么要用giou来代替，我也没想明白，有知道的网友欢迎留言。</p>
+<p>其余的部分比较好理解，在此不再赘述。</p>
+<p>附：<br>plot_gxy的代码：</p>
+<p><code>def plot_gxy(gxy, scale_i, size, flag):</code><br>    <code>s = int(size[2].cpu().numpy())</code><br>    <code>ax = plt.subplot(111)</code><br>    <code>ax.axis([0, s, 0, s])</code><br>    <code>lxx = np.arange(0, s + 1, 1)</code><br>    <code>lxx = np.repeat(lxx, s + 1, axis=0)</code><br>    <code>lxx = lxx.reshape(s + 1, s + 1)</code><br>    <code>lyy = np.arange(0, s + 1, 1)</code><br>    <code>lyy = np.repeat(lyy, s + 1, axis=0)</code><br>    <code>lyy = lyy.reshape(s + 1, s + 1)</code><br>    <code>lyy = lyy.T</code></p>
+<pre><code>for i in range(len(lxx)):
+    plt.plot(lxx[i], lyy[i], color=&#39;k&#39;, linewidth=0.05, linestyle=&#39;-&#39;)
+    plt.plot(lyy[i], lxx[i], color=&#39;k&#39;, linewidth=0.05, linestyle=&#39;-&#39;)
+
+for i in range(len(gxy)):
+    x1, y1 = gxy.cpu().numpy().T
+    plt.scatter(x1, y1, s=0.02, color=&#39;k&#39;)
+
+ax = plt.gca()  # 获取到当前坐标轴信息
+ax.xaxis.set_ticks_position(&#39;top&#39;)  # 将X坐标轴移到上面
+ax.invert_yaxis()
+plt.savefig(&quot;gxy_&#123;&#125;_&#123;&#125;.png&quot;.format(scale_i, flag))
+plt.close()`
+</code></pre>
+<p>第一部分为box的损失函数，可以用过smoth L1损失函数计算xywh，也可以通过iou、giou、ciou等。类似的giou、diou和ciou都是在交并比iou的基础上发展而来的优化方法，解决了iou在两个候选框完全没有交集时，损失为0不可优化的状况。第二部分为有无物体的损失：yolo独特的设置了一个有无物体的confidence，目标中有的自然设置为1。预测的值用sigmoid转化为（0，1）的概率，然后计算binary cross entropy。第三部分为分类损失部分，虽然是多分类，也采用binary corss entropy。<br>同时，为了平衡不同尺度的输出，v5中对以上三部分加了人工痕迹比较明显的系数。</p>
+<p>后处理<br>极大值抑制(nms)。分三个尺度进行检测，且分配不同的anchor，那么同一个物体有可能被多个尺度、anchor所检测到。所以通过极大值抑制来从中选择最佳的候选框。也有soft-nms、matrix-nms等改进方式可以试一试。</p>
+<p>训练<br>训练过程就比较平平无奇了，可以添加如下技巧：梯度累积、遗传算法、EMA滑动平均、算子融合。</p>
+<p>展望<br>检测之外，之后还可以继续拓展和优化的方向：</p>
+<p>tensorrt推理加速<br>deepsort物体追踪，可以稳定视频中检测框的抖动<br>针对小目标分割patch检测，例如卫星遥感图像的改进you only look twice<br>多尺度scalable yolov4</p>
+<p>代码如下：<br>Yolov5-pytorch<br>Yolov5-tensorflow</p>
+<p>date: 2022-3-22 20:22:25<br>tags: 标签<br>categories: 分类</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">AlanWu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2022/03/23/yolo/">http://example.com/2022/03/23/yolo/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">AlanWu的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://img0.baidu.com/it/u=3756588693,3502079798&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=GIF?w=499&amp;h=298" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/03/24/deepfusion/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic4.zhimg.com/80/v2-a343662faad0c297ccf4efbb846fbc2d_r.jpg" onerror="onerror=null;src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Deep Fusion(深度融合)是什么？Deep Fusion有多优秀？</div></div></a></div><div class="next-post pull-right"><a href="/2022/03/23/deeplearning/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fspider.ws.126.net%2F307b617a49403baabdeaa7841c50db4d.jpeg&amp;refer=http%3A%2F%2Fspider.ws.126.net&amp;app=2002&amp;size=f9999,10000&amp;q=a80&amp;n=0&amp;g=0n&amp;fmt=auto?sec=1651475661&amp;t=c02de3ae75d33ffdf72d8f7b907c36df" onerror="onerror=null;src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">机器学习，深度学习，神经网络，深度神经网络之间有何区别？</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic3.zhimg.com/80/v2-741506174e170418d38dba06563b41b7_720w.jpg?source=1940ef5c" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">AlanWu</div><div class="author-info__description">不必为昨天的泪而弄湿今天的阳光</div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://blog.csdn.net/blink182007?type=blog"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://graph.qq.com/oauth2.0/show?which=Login&amp;display=pc&amp;response_type=code&amp;client_id=101559500&amp;redirect_uri=https:%2F%2Fcpo.qq.com%2Fconnect%2Fcallback&amp;scope=get_user_info" target="_blank" title="QQ"><i class="iconfont icon-qq"></i></a><a class="social-icon" href="https://filehelper.weixin.qq.com" target="_blank" title="微信"><i class="iconfont icon-weixin"></i></a><a class="social-icon" href="https://ddys2.me" target="_blank" title="低端影视"><i class="iconfont icon-dianyingyuan"></i></a><a class="social-icon" href="https://www.chaoxing.com" target="_blank" title="超星学习通"><i class="iconfont icon-menhuchangyongyingyongxitongICONyuande_chaoxingjiaoxuepingtai"></i></a><a class="social-icon" href="https://blog.csdn.net/blink182007?type=blog" target="_blank" title="追随我CSDN"><i class="iconfont icon-csdn"></i></a><a class="social-icon" href="https://www.cnki.net" target="_blank" title="中国知网"><i class="iconfont icon-zhiwang"></i></a><a class="social-icon" href="https://v.qq.com/" target="_blank" title="腾讯视频"><i class="iconfont icon-tengxunvideo"></i></a><a class="social-icon" href="http://www.4399.com/" target="_blank" title="4399小游戏"><i class="iconfont icon-youxiwang"></i></a><a class="social-icon" href="https://www.iqiyi.com/" target="_blank" title="爱奇艺"><i class="iconfont icon-aiqiyi"></i></a><a class="social-icon" href="https://www.baidu.com" target="_blank" title="百度一下"><i class="iconfont icon-icon_baidulogo"></i></a><a class="social-icon" href="https://www.zhihu.com/people/zhao-mi-nian" target="_blank" title="知乎"><i class="iconfont icon-zhihu"></i></a><a class="social-icon" href="https://weibo.com/u/7191404064" target="_blank" title="新浪微博"><i class="iconfont icon-xinlangweibo"></i></a><a class="social-icon" href="https://www.bilibili.com" target="_blank" title="哔哩哔哩"><i class="iconfont icon-bilibili"></i></a><a class="social-icon" href="https://web.shanbay.com/web/users/243370675/zone" target="_blank" title="扇贝单词"><i class="iconfont icon-kaoyanyingyu"></i></a><a class="social-icon" href="https://www.iqihang.com/ark/record/11098/3726/1334926/158134587/3/72/2/3278" target="_blank" title="考研数学"><i class="iconfont icon-Group45611"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到夜之城</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%A0%E7%BB%9F%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA%E6%96%B9%E5%BC%8F%E6%9C%89%E9%9A%8F%E6%9C%BA%E7%BF%BB%E8%BD%AC%E3%80%81%E6%97%8B%E8%BD%AC%E3%80%81%E8%A3%81%E5%89%AA%E3%80%81%E5%8F%98%E5%BD%A2%E7%BC%A9%E6%94%BE%E3%80%81%E6%B7%BB%E5%8A%A0%E5%99%AA%E5%A3%B0%E3%80%81%E9%A2%9C%E8%89%B2%E6%89%B0%E5%8A%A8%E7%AD%89%E7%AD%89%E3%80%82"><span class="toc-number">1.</span> <span class="toc-text">传统数据增强方式有随机翻转、旋转、裁剪、变形缩放、添加噪声、颜色扰动等等。</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/02/13/Bert/" title="Bert模型MRPC任务从本地到云端部署踩坑记录"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic3.zhimg.com/v2-f654f0628e002434f1464b36c61667d3_b.jpg" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="Bert模型MRPC任务从本地到云端部署踩坑记录"/></a><div class="content"><a class="title" href="/2023/02/13/Bert/" title="Bert模型MRPC任务从本地到云端部署踩坑记录">Bert模型MRPC任务从本地到云端部署踩坑记录</a><time datetime="2023-02-12T16:50:13.481Z" title="发表于 2023-02-13 00:50:13">2023-02-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/05/15/Detectron2yolof/" title="Detectron2实战案例"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic2.zhimg.com/80/v2-30a9500b5ebf9347aae5b74404229d07_r.jpg" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="Detectron2实战案例"/></a><div class="content"><a class="title" href="/2022/05/15/Detectron2yolof/" title="Detectron2实战案例">Detectron2实战案例</a><time datetime="2022-05-15T04:17:28.771Z" title="发表于 2022-05-15 12:17:28">2022-05-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/06/sony1/" title="索尼微单编年史"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic3.zhimg.com/80/v2-05109d3d7158aa8a6dd0aa8bf74c07bc_r.jpg" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="索尼微单编年史"/></a><div class="content"><a class="title" href="/2022/04/06/sony1/" title="索尼微单编年史">索尼微单编年史</a><time datetime="2022-04-06T02:48:40.529Z" title="发表于 2022-04-06 10:48:40">2022-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/01/yolome/" title="初学入门YOLOv5手势识别之制作并训练自己的数据集"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="http://mms2.baidu.com/it/u=1541053178,3942721378&amp;fm=253&amp;app=138&amp;f=JPEG&amp;fmt=auto&amp;q=75?w=474&amp;h=251" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="初学入门YOLOv5手势识别之制作并训练自己的数据集"/></a><div class="content"><a class="title" href="/2022/04/01/yolome/" title="初学入门YOLOv5手势识别之制作并训练自己的数据集">初学入门YOLOv5手势识别之制作并训练自己的数据集</a><time datetime="2022-04-01T03:53:45.117Z" title="发表于 2022-04-01 11:53:45">2022-04-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/01/hexo%20command/" title="Hexo常用命令"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic1.16pic.com%2F00%2F01%2F33%2F16pic_133629_b.jpg&amp;refer=http%3A%2F%2Fpic1.16pic.com&amp;app=2002&amp;size=f9999,10000&amp;q=a80&amp;n=0&amp;g=0n&amp;fmt=auto?sec=1651475751&amp;t=a2d265b9971c3bb8722e6258af9662d6" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="Hexo常用命令"/></a><div class="content"><a class="title" href="/2022/04/01/hexo%20command/" title="Hexo常用命令">Hexo常用命令</a><time datetime="2022-04-01T03:53:45.108Z" title="发表于 2022-04-01 11:53:45">2022-04-01</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By AlanWu</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">本地搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="/js/search/local-search.js"></script><script>var endLoading = function () {
+  document.body.style.overflow = 'auto';
+  document.getElementById('loading-box').classList.add("loaded")
+}
+window.addEventListener('load',endLoading)</script><div class="js-pjax"><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://twikoo-5li1em5hj-wcelll.vercel.app/',
+      region: '',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.vemoji)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo-5li1em5hj-wcelll.vercel.app/',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      document.getElementById('twikoo-count').innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div><div class="aplayer no-destroy" data-id="509265479" data-server="netease" data-type="playlist" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-preload="none" data-autoplay="false" muted></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="true"></script><script src="//code.tidio.co/9kuxvjbgybmbb3e1bz7iv4n9y3y5crqm.js" async="async"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  typeof preloader === 'object' && preloader.initLoading()
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script>var endLoading = function () {
+  document.body.style.overflow = 'auto';
+  document.getElementById('loading-box').classList.add("loaded")
+}
+window.addEventListener('load',endLoading)</script></body></html><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script type="text/javascript" src="/js/crash_cheat.js"></script>

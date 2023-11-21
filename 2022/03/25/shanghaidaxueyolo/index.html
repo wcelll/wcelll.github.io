@@ -1,0 +1,359 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>上海交大提出CDNet：基于改进YOLOv5的斑马线和汽车过线行为检测 | AlanWu的博客</title><meta name="keywords" content="学习，小白，encrypted"><meta name="author" content="AlanWu"><meta name="copyright" content="AlanWu"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="CDNet: A Real-Time and Robust Crosswalk Detection Network on Jetson Nano Based on YOLOv5 CDNet: 一个基于YOLOv5的在Jetson Nano上实时、鲁棒的斑马线检测网络 作者：Zheng-De Zhang, Meng-Lu Tan, Zhi-Cai Lan, Hai-Chun Liu, Ling Pe">
+<meta property="og:type" content="article">
+<meta property="og:title" content="上海交大提出CDNet：基于改进YOLOv5的斑马线和汽车过线行为检测">
+<meta property="og:url" content="http://example.com/2022/03/25/shanghaidaxueyolo/index.html">
+<meta property="og:site_name" content="AlanWu的博客">
+<meta property="og:description" content="CDNet: A Real-Time and Robust Crosswalk Detection Network on Jetson Nano Based on YOLOv5 CDNet: 一个基于YOLOv5的在Jetson Nano上实时、鲁棒的斑马线检测网络 作者：Zheng-De Zhang, Meng-Lu Tan, Zhi-Cai Lan, Hai-Chun Liu, Ling Pe">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img1.baidu.com/it/u=2256398362,2776889111&fm=253&fmt=auto&app=138&f=PNG?w=499&h=299">
+<meta property="article:published_time" content="2022-03-25T06:40:04.159Z">
+<meta property="article:modified_time" content="2023-11-21T11:00:11.396Z">
+<meta property="article:author" content="AlanWu">
+<meta property="article:tag" content="学习，小白，encrypted">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img1.baidu.com/it/u=2256398362,2776889111&fm=253&fmt=auto&app=138&f=PNG?w=499&h=299"><link rel="shortcut icon" href="https://pic2.zhimg.com/80/v2-90c7858a0c40298cc6da5a4e7ac671de_xl.jpg"><link rel="canonical" href="http://example.com/2022/03/25/shanghaidaxueyolo/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '上海交大提出CDNet：基于改进YOLOv5的斑马线和汽车过线行为检测',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2023-11-21 19:00:11'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><link rel="stylesheet" href="APlayer.min.css"><div id="aplayer"></div><script src="https://cdn.jsdelivr.net/gh/radium-bit/res@master/live2d/autoload.js" async></script><script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js" async></script><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/iconfont.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zyoushuo/Blog@latest/hexo/css/loading_style_1.css" ><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zyoushuo/Blog@latest/hexo/css/loading_style_2.css" ><meta name="generator" content="Hexo 6.1.0"></head><body>
+<div id='loader'>
+    
+    <div class="outer_box">
+    <div class='loader_overlay'></div>
+    <div class='loader_cogs'>
+        <div class='loader_cogs__top'>
+            <div class='top_part'></div>
+            <div class='top_part'></div>
+            <div class='top_part'></div>
+            <div class='top_hole'></div>
+        </div>
+        <div class='loader_cogs__left'>
+            <div class='left_part'></div>
+            <div class='left_part'></div>
+            <div class='left_part'></div>
+            <div class='left_hole'></div>
+        </div>
+        <div class='loader_cogs__bottom'>
+            <div class='bottom_part'></div>
+            <div class='bottom_part'></div>
+            <div class='bottom_part'></div>
+            <div class='bottom_hole'></div>
+        </div>
+        <p style="text-align:center">&nbsp;&nbsp;&nbsp;loading...</p>
+    </div>
+    </div>
+    
+</div>
+    
+<script>
+    var endLoading = function () {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loader').classList.add("loading");
+    }
+    window.addEventListener('load',endLoading);
+</script>
+<div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic3.zhimg.com/80/v2-741506174e170418d38dba06563b41b7_720w.jpg?source=1940ef5c" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li><li><a class="site-page child" href="/ChatGPT/"><i class="fa-fw fa fa-rocket"></i><span> ChatGPT</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-american-sign-language-interpreting"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/musics/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://img1.baidu.com/it/u=2256398362,2776889111&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=PNG?w=499&amp;h=299')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">AlanWu的博客</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li><li><a class="site-page child" href="/ChatGPT/"><i class="fa-fw fa fa-rocket"></i><span> ChatGPT</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-american-sign-language-interpreting"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/musics/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">上海交大提出CDNet：基于改进YOLOv5的斑马线和汽车过线行为检测</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-03-25T06:40:04.159Z" title="发表于 2022-03-25 14:40:04">2022-03-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-21T11:00:11.396Z" title="更新于 2023-11-21 19:00:11">2023-11-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/test/">test</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="上海交大提出CDNet：基于改进YOLOv5的斑马线和汽车过线行为检测"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>CDNet: A Real-Time and Robust Crosswalk Detection Network on Jetson Nano Based on YOLOv5</p>
+<p>CDNet: 一个基于YOLOv5的在Jetson Nano上实时、鲁棒的斑马线检测网络</p>
+<p>作者：Zheng-De Zhang, Meng-Lu Tan, Zhi-Cai Lan, Hai-Chun Liu, Ling Pei, Wen-Xian Yu</p>
+<p>时间：Feb, 2022</p>
+<p>期刊：Neural Computing &amp; Applications, IF 5.6</p>
+<p>一个神经网络在具体场景（斑马线检测）的应用，改进YOLOv5，提出多项tricks，数据集和复现代码开源！</p>
+<span id="more"></span>
+
+<p>摘要：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic2.zhimg.com/80/v2-0960db19bc893177adc3eeeff87a9985_720w.jpg"></p>
+<p>图1 图形摘要</p>
+<p>在复杂场景和有限计算能力下实现实时、鲁棒的斑马线（人行横道）检测是当前智能交通管理系统（ITMS）的重要难点之一。有限的边缘计算能力和多云、晴天、雨天、雾天和夜间等真实复杂的场景同时对这项任务提出了挑战。本研究提出基于改进YOLOv5的人行横道检测网络（CDNet），实现车载摄像头视觉下快速准确的人行横道检测，并在Jetson nano设备上实现实时检测。强大的卷积神经网络特征提取器用于处理复杂环境，网络中嵌入了squeeze-and-excitation（SE）注意力机制模块，使用负样本训练（NST）方法提高准确率，利用感兴趣区域（ROI）算法进一步提高检测速度，提出了一种新的滑动感受野短时向量记忆（SSVM）算法来提高车辆交叉行为检测精度，使用合成雾增强算法允许模型适应有雾的场景。最后，在 Jetson nano 上以 33.1 FPS 的检测速度，我们在上述复杂场景中获得了 94.83% 的平均 F1 分数。对于晴天和阴天等更好的天气条件，F1 分数超过 98%。该工作为人工神经网络算法优化方法在边缘计算设备上的具体应用提供了参考，发布的模型为智能交通管理系统提供了算法支持。</p>
+<p>贡献：</p>
+<ul>
+<li>注意力机制网络改进网络，提升精度，略微降低速度：SENet (Squeeze-and-Excitation Network)</li>
+<li><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic2.zhimg.com/80/v2-1e5666756525bb9665445bd47939d735_720w.jpg"></li>
+</ul>
+<p>图2 改进，SENet嵌入到CSP中形成SE-CSP</p>
+<ul>
+<li>负样本训练，提升精度，速度不变: NST (Negative Samples Training)</li>
+<li><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic2.zhimg.com/80/v2-053ebc13c731af4192f246150d4f99e9_720w.jpg"></li>
+</ul>
+<p>图3 负样本训练</p>
+<ul>
+<li>感兴趣区域，提升速度，精度下降：ROI (Region Of Interest)</li>
+<li><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic1.zhimg.com/80/v2-0a1b7f29a483579536fd6889ba193440_720w.jpg"></li>
+</ul>
+<p>图4 ROI</p>
+<ul>
+<li>滑动感受野短时向量记忆算法，迁移斑马线检测任务到汽车过线行为检测任务，提升精度，速度不变：SSVM (Slide receptive field Short-term Vectors Memory)</li>
+<li><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic2.zhimg.com/80/v2-08703a6889a5daf9237b8f4edf82d171_720w.jpg"></li>
+</ul>
+<p>图5 SSVM</p>
+<ul>
+<li>合成雾增强算法，增强数据集，适应雾天，提升精度，速度不变：SFA (Synthetic Fog Augment)</li>
+<li><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic3.zhimg.com/80/v2-01a1f8ac0baa37892927ffa6ba11930e_720w.jpg"></li>
+</ul>
+<p>图6 SFA</p>
+<ul>
+<li><p>斑马数据集：标注好的，车载摄像头视角下的，共计6868张图像。</p>
+</li>
+<li><p>复现代码：见github项目主页</p>
+</li>
+</ul>
+<p>结果</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic1.zhimg.com/80/v2-344b24beda5098b71df845407ac7e740_720w.jpg"></p>
+<p>CDNet最终在Jetson nano上实现了33.1FPS实时检测，多云、晴天、雨天、雾天和夜间多个场景平均检测F1分数94.72%。</p>
+<p>与原生YOLOv5相比，检测尺寸为640时，CDNet 在 Jetson nano 上提高了5.13%的F1分数和10.7FPS的速度， 检测尺寸为288时，提升为13.38%的F1分数和13.1FPS。</p>
+<p>相关链接</p>
+<p>数据集、复现代码：<a target="_blank" rel="noopener" href="https://github.com/zhangzhengde0225/CDNet">https://github.com/zhangzhengde0225/CDNet</a></p>
+<p>视频样例：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1qf4y1B7BA">https://www.bilibili.com/video/BV1qf4y1B7BA</a></p>
+<p>阅读全文：<a target="_blank" rel="noopener" href="https://rdcu.be/cHuc8">https://rdcu.be/cHuc8</a></p>
+<p>下载全文：<a target="_blank" rel="noopener" href="https://doi.org/10.1007/s00521-022-07007-9">https://doi.org/10.1007/s00521-022-07007-9</a></p>
+<p>[]: <a target="_blank" rel="noopener" href="https://link.springer.com/epdf/10.1007/s00521-022-07007-9?sharing_token=DRB13ldb4pD1uh0V0yNPCPe4RwlQNchNByi7wbcMAY5KArlu0TX_ZFp7-m7RpG0Y4Bu0AQ2fiGCsxWTMz57dozRmmcIpAneboVR39q4l4hZnWYgxVpqVOT5VpGAX09KHIhzl3er39RZX7DksHxu9tOZ41x-Irl7N1bv7VW814ko=">https://link.springer.com/epdf/10.1007/s00521-022-07007-9?sharing_token=DRB13ldb4pD1uh0V0yNPCPe4RwlQNchNByi7wbcMAY5KArlu0TX_ZFp7-m7RpG0Y4Bu0AQ2fiGCsxWTMz57dozRmmcIpAneboVR39q4l4hZnWYgxVpqVOT5VpGAX09KHIhzl3er39RZX7DksHxu9tOZ41x-Irl7N1bv7VW814ko%3D</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">AlanWu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2022/03/25/shanghaidaxueyolo/">http://example.com/2022/03/25/shanghaidaxueyolo/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">AlanWu的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0%EF%BC%8C%E5%B0%8F%E7%99%BD%EF%BC%8Cencrypted/">学习，小白，encrypted</a></div><div class="post_share"><div class="social-share" data-image="https://img1.baidu.com/it/u=2256398362,2776889111&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=PNG?w=499&amp;h=299" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/03/26/yoloweihua/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img0.baidu.com/it/u=604234677,3784485538&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=PNG?w=464&amp;h=332" onerror="onerror=null;src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">YoloV5实战：手把手教物体检测——YoloV5</div></div></a></div><div class="next-post pull-right"><a href="/2022/03/24/possibleupforyolov5/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201408%2F02%2F20140802152254_34MMf.png&amp;refer=http%3A%2F%2Fb-ssl.duitang.com&amp;app=2002&amp;size=f9999,10000&amp;q=a80&amp;n=0&amp;g=0n&amp;fmt=auto?sec=1651475808&amp;t=47842cdefc4b54753683ee8e7ef0b648" onerror="onerror=null;src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">又来!项目如何改进YOLOv5？这篇告诉你如何修改让检测更快、更稳！！！</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/04/01/hexo%20command/" title="Hexo常用命令"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic1.16pic.com%2F00%2F01%2F33%2F16pic_133629_b.jpg&refer=http%3A%2F%2Fpic1.16pic.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1651475751&t=a2d265b9971c3bb8722e6258af9662d6" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-04-01</div><div class="title">Hexo常用命令</div></div></a></div><div><a href="/2022/03/26/yoloweihua/" title="YoloV5实战：手把手教物体检测——YoloV5"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img0.baidu.com/it/u=604234677,3784485538&fm=253&fmt=auto&app=138&f=PNG?w=464&h=332" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-26</div><div class="title">YoloV5实战：手把手教物体检测——YoloV5</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic3.zhimg.com/80/v2-741506174e170418d38dba06563b41b7_720w.jpg?source=1940ef5c" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">AlanWu</div><div class="author-info__description">不必为昨天的泪而弄湿今天的阳光</div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://blog.csdn.net/blink182007?type=blog"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://graph.qq.com/oauth2.0/show?which=Login&amp;display=pc&amp;response_type=code&amp;client_id=101559500&amp;redirect_uri=https:%2F%2Fcpo.qq.com%2Fconnect%2Fcallback&amp;scope=get_user_info" target="_blank" title="QQ"><i class="iconfont icon-qq"></i></a><a class="social-icon" href="https://filehelper.weixin.qq.com" target="_blank" title="微信"><i class="iconfont icon-weixin"></i></a><a class="social-icon" href="https://ddys2.me" target="_blank" title="低端影视"><i class="iconfont icon-dianyingyuan"></i></a><a class="social-icon" href="https://www.chaoxing.com" target="_blank" title="超星学习通"><i class="iconfont icon-menhuchangyongyingyongxitongICONyuande_chaoxingjiaoxuepingtai"></i></a><a class="social-icon" href="https://blog.csdn.net/blink182007?type=blog" target="_blank" title="追随我CSDN"><i class="iconfont icon-csdn"></i></a><a class="social-icon" href="https://www.cnki.net" target="_blank" title="中国知网"><i class="iconfont icon-zhiwang"></i></a><a class="social-icon" href="https://v.qq.com/" target="_blank" title="腾讯视频"><i class="iconfont icon-tengxunvideo"></i></a><a class="social-icon" href="http://www.4399.com/" target="_blank" title="4399小游戏"><i class="iconfont icon-youxiwang"></i></a><a class="social-icon" href="https://www.iqiyi.com/" target="_blank" title="爱奇艺"><i class="iconfont icon-aiqiyi"></i></a><a class="social-icon" href="https://www.baidu.com" target="_blank" title="百度一下"><i class="iconfont icon-icon_baidulogo"></i></a><a class="social-icon" href="https://www.zhihu.com/people/zhao-mi-nian" target="_blank" title="知乎"><i class="iconfont icon-zhihu"></i></a><a class="social-icon" href="https://weibo.com/u/7191404064" target="_blank" title="新浪微博"><i class="iconfont icon-xinlangweibo"></i></a><a class="social-icon" href="https://www.bilibili.com" target="_blank" title="哔哩哔哩"><i class="iconfont icon-bilibili"></i></a><a class="social-icon" href="https://web.shanbay.com/web/users/243370675/zone" target="_blank" title="扇贝单词"><i class="iconfont icon-kaoyanyingyu"></i></a><a class="social-icon" href="https://www.iqihang.com/ark/record/11098/3726/1334926/158134587/3/72/2/3278" target="_blank" title="考研数学"><i class="iconfont icon-Group45611"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到夜之城</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/02/13/Bert/" title="Bert模型MRPC任务从本地到云端部署踩坑记录"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic3.zhimg.com/v2-f654f0628e002434f1464b36c61667d3_b.jpg" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="Bert模型MRPC任务从本地到云端部署踩坑记录"/></a><div class="content"><a class="title" href="/2023/02/13/Bert/" title="Bert模型MRPC任务从本地到云端部署踩坑记录">Bert模型MRPC任务从本地到云端部署踩坑记录</a><time datetime="2023-02-12T16:50:13.481Z" title="发表于 2023-02-13 00:50:13">2023-02-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/05/15/Detectron2yolof/" title="Detectron2实战案例"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic2.zhimg.com/80/v2-30a9500b5ebf9347aae5b74404229d07_r.jpg" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="Detectron2实战案例"/></a><div class="content"><a class="title" href="/2022/05/15/Detectron2yolof/" title="Detectron2实战案例">Detectron2实战案例</a><time datetime="2022-05-15T04:17:28.771Z" title="发表于 2022-05-15 12:17:28">2022-05-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/06/sony1/" title="索尼微单编年史"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic3.zhimg.com/80/v2-05109d3d7158aa8a6dd0aa8bf74c07bc_r.jpg" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="索尼微单编年史"/></a><div class="content"><a class="title" href="/2022/04/06/sony1/" title="索尼微单编年史">索尼微单编年史</a><time datetime="2022-04-06T02:48:40.529Z" title="发表于 2022-04-06 10:48:40">2022-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/01/yolome/" title="初学入门YOLOv5手势识别之制作并训练自己的数据集"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="http://mms2.baidu.com/it/u=1541053178,3942721378&amp;fm=253&amp;app=138&amp;f=JPEG&amp;fmt=auto&amp;q=75?w=474&amp;h=251" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="初学入门YOLOv5手势识别之制作并训练自己的数据集"/></a><div class="content"><a class="title" href="/2022/04/01/yolome/" title="初学入门YOLOv5手势识别之制作并训练自己的数据集">初学入门YOLOv5手势识别之制作并训练自己的数据集</a><time datetime="2022-04-01T03:53:45.117Z" title="发表于 2022-04-01 11:53:45">2022-04-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/01/hexo%20command/" title="Hexo常用命令"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic1.16pic.com%2F00%2F01%2F33%2F16pic_133629_b.jpg&amp;refer=http%3A%2F%2Fpic1.16pic.com&amp;app=2002&amp;size=f9999,10000&amp;q=a80&amp;n=0&amp;g=0n&amp;fmt=auto?sec=1651475751&amp;t=a2d265b9971c3bb8722e6258af9662d6" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="Hexo常用命令"/></a><div class="content"><a class="title" href="/2022/04/01/hexo%20command/" title="Hexo常用命令">Hexo常用命令</a><time datetime="2022-04-01T03:53:45.108Z" title="发表于 2022-04-01 11:53:45">2022-04-01</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By AlanWu</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">本地搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="/js/search/local-search.js"></script><script>var endLoading = function () {
+  document.body.style.overflow = 'auto';
+  document.getElementById('loading-box').classList.add("loaded")
+}
+window.addEventListener('load',endLoading)</script><div class="js-pjax"><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://twikoo-5li1em5hj-wcelll.vercel.app/',
+      region: '',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.vemoji)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo-5li1em5hj-wcelll.vercel.app/',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      document.getElementById('twikoo-count').innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div><div class="aplayer no-destroy" data-id="509265479" data-server="netease" data-type="playlist" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-preload="none" data-autoplay="false" muted></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="true"></script><script src="//code.tidio.co/9kuxvjbgybmbb3e1bz7iv4n9y3y5crqm.js" async="async"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  typeof preloader === 'object' && preloader.initLoading()
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script>var endLoading = function () {
+  document.body.style.overflow = 'auto';
+  document.getElementById('loading-box').classList.add("loaded")
+}
+window.addEventListener('load',endLoading)</script></body></html><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script type="text/javascript" src="/js/crash_cheat.js"></script>
