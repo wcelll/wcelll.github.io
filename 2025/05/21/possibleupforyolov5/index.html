@@ -1,0 +1,346 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>又来!项目如何改进YOLOv5？这篇告诉你如何修改让检测更快、更稳！！！ | AlanWu的博客</title><meta name="keywords" content="opencv，deep Learning"><meta name="author" content="阿良"><meta name="copyright" content="阿良"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="交通标志检测对于无人驾驶系统来说是一项具有挑战性的任务，尤其是多尺度目标检测和检测的实时性问题。在交通标志检测过程中，目标的规模变化很大，会对检测精度产生一定的影响。特征金字塔是解决这一问题的常用方法，但它可能会破坏交通标志在不同尺度上的特征一致性。而且，在实际应用中，普通方法难以在保证实时检测的同时提高多尺度交通标志的检测精度。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="又来!项目如何改进YOLOv5？这篇告诉你如何修改让检测更快、更稳！！！">
+<meta property="og:url" content="http://example.com/2025/05/21/possibleupforyolov5/index.html">
+<meta property="og:site_name" content="AlanWu的博客">
+<meta property="og:description" content="交通标志检测对于无人驾驶系统来说是一项具有挑战性的任务，尤其是多尺度目标检测和检测的实时性问题。在交通标志检测过程中，目标的规模变化很大，会对检测精度产生一定的影响。特征金字塔是解决这一问题的常用方法，但它可能会破坏交通标志在不同尺度上的特征一致性。而且，在实际应用中，普通方法难以在保证实时检测的同时提高多尺度交通标志的检测精度。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201408%2F02%2F20140802152254_34MMf.png&refer=http%3A%2F%2Fb-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1651475808&t=47842cdefc4b54753683ee8e7ef0b648">
+<meta property="article:published_time" content="2025-05-21T09:42:59.902Z">
+<meta property="article:modified_time" content="2022-04-02T07:17:51.165Z">
+<meta property="article:author" content="阿良">
+<meta property="article:tag" content="opencv，deep Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201408%2F02%2F20140802152254_34MMf.png&refer=http%3A%2F%2Fb-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1651475808&t=47842cdefc4b54753683ee8e7ef0b648"><link rel="shortcut icon" href="https://pic2.zhimg.com/80/v2-90c7858a0c40298cc6da5a4e7ac671de_xl.jpg"><link rel="canonical" href="http://example.com/2025/05/21/possibleupforyolov5/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '又来!项目如何改进YOLOv5？这篇告诉你如何修改让检测更快、更稳！！！',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-04-02 15:17:51'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><link rel="stylesheet" href="APlayer.min.css"><div id="aplayer"></div><script src="https://cdn.jsdelivr.net/gh/radium-bit/res@master/live2d/autoload.js" async></script><script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js" async></script><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/iconfont.css" media="defer" onload="this.media='all'"><meta name="generator" content="Hexo 6.1.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic3.zhimg.com/80/v2-741506174e170418d38dba06563b41b7_720w.jpg?source=1940ef5c" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">10</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/musics/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201408%2F02%2F20140802152254_34MMf.png&amp;refer=http%3A%2F%2Fb-ssl.duitang.com&amp;app=2002&amp;size=f9999,10000&amp;q=a80&amp;n=0&amp;g=0n&amp;fmt=auto?sec=1651475808&amp;t=47842cdefc4b54753683ee8e7ef0b648')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">AlanWu的博客</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/musics/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">又来!项目如何改进YOLOv5？这篇告诉你如何修改让检测更快、更稳！！！</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-05-21T09:42:59.902Z" title="发表于 2025-05-21 17:42:59">2025-05-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-04-02T07:17:51.165Z" title="更新于 2022-04-02 15:17:51">2022-04-02</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="又来!项目如何改进YOLOv5？这篇告诉你如何修改让检测更快、更稳！！！"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="http://mianbaoban-assets.oss-cn-shenzhen.aliyuncs.com/xinyu-images/MBXY-CR-160c10bce0fdfa84ad486ec364b243fe.png"></p>
+<p><strong>交通标志检测对于无人驾驶系统来说是一项具有挑战性的任务，尤其是多尺度目标检测和检测的实时性问题。在交通标志检测过程中，目标的规模变化很大，会对检测精度产生一定的影响。特征金字塔是解决这一问题的常用方法，但它可能会破坏交通标志在不同尺度上的特征一致性。而且，在实际应用中，普通方法难以在保证实时检测的同时提高多尺度交通标志的检测精度。</strong></p>
+<span id="more"></span>
+
+<p><strong>本文提出了一种改进的特征金字塔模型AF-FPN，该模型利用自适应注意模块(adaptive attention module, AAM)和特征增强模块(feature enhancement module, FEM)来减少特征图生成过程中的信息丢失，进而提高特征金字塔的表示能力。将YOLOv5中原有的特征金字塔网络替换为AF-FPN，在保证实时检测的前提下，提高了YOLOv5网络对多尺度目标的检测性能。</strong></p>
+<p><strong>此外，提出了一种新的自动学习数据增强方法，以丰富数据集，提高模型的鲁棒性，使其更适合于实际场景。在100K (TT100K)数据集上的大量实验结果表明，与几种先进方法相比，本文方法的有效性和优越性得到了验证。</strong></p>
+<h2 id="1介绍"><a href="#1介绍" class="headerlink" title="1介绍"></a>1介绍</h2><p>交通标志识别系统是ITS和无人驾驶系统的重要组成部分。如何提高交通标志检测与识别技术的准确性和实时性，是该技术走向实际应用时需要解决的关键问题。</p>
+<p>近年来，大多数先进的目标检测算法，如Faster R-CNN、R-FCN、SSD和YOLO，都使用了卷积神经网络，并在目标检测任务中取得了丰硕的成果。然而，将这些方法简单地应用到交通标志识别中很难取得满意的效果。车载移动终端的目标识别和检测对不同尺度的目标要求较高的精度，对识别速度要求较高，这意味着要满足准确性和实时性两个要求。</p>
+<p>传统的CNN通常需要大量的参数和浮点运算(FLOPs)来达到令人满意的精度，例如ResNet-50有大约25.6万个参数，需要41亿个浮点运算来处理224×224大小的图像。然而，内存和计算资源有限的移动设备(如智能手机和自动驾驶汽车)无法用于更大网络的部署和推理。YOLOv5作为一种One-stage检测器，具有计算量小、识别速度快等优点。</p>
+<p>本文提出了一种改进的YOLOv5网络，既保证模型尺寸满足部署在车辆侧的要求，又提高了多尺度目标的能力，满足实时性要求。</p>
+<p>工作的主要贡献如下:</p>
+<p>提出了一种新的特征金字塔网络。通过自适应特征融合和感受野增强，在特征传递过程中很大程度上保留通道信息，并自适应学习每个特征图中的不同感受野，增强特征金字塔的表示，有效地提高了多尺度目标识别的精度;</p>
+<p>提出了一种新的自动学习数据增强策略。受AutoAugment的启发，添加了最新的数据增强操作。改进的数据增强方法有效地提高了模型训练效果和训练模型的鲁棒性，具有更大的现实意义;</p>
+<p>与现有的YOLOv5网络不同，对当前版本进行了改进，以减少尺度不变性的影响。同时，它可以部署在车辆的移动终端上，对交通标志进行实时检测和识别。</p>
+<h2 id="2相关工作"><a href="#2相关工作" class="headerlink" title="2相关工作"></a>2相关工作</h2><h3 id="2-1-基于CNN的交通标识检测"><a href="#2-1-基于CNN的交通标识检测" class="headerlink" title="2.1 基于CNN的交通标识检测"></a>2.1 基于CNN的交通标识检测</h3><p>目前，卷积神经网络在视觉目标检测方面取得了很大的成功。根据是否需要提出区域建议，基于深度学习的目标检测可分为两类:单阶段检测和两阶段检测。</p>
+<p>Shao等人提出了一种区域建议算法来简化Gabor小波，提高Faster R-CNN用于交通标志检测。Zhang等人提出了一种改进的基于YOLOv2的交通标志检测器，修改了经典YOLOv2网络的卷积层数，使其适合中国交通标志数据集。Li等人开发了一种新的感知生成对抗网络，该网络通过生成小交通标志的超分辨率表示来提高检测性能。SADANet结合域自适应网络和多尺度预测网络来解决尺度变化问题。</p>
+<p>上述网络大多采用单尺度的深度特征，难以提高复杂场景下的检测和识别性能。大型和小型交通标志具有完全不同的视觉特征，因此规模变化问题是交通标志检测与识别中的一个难题。对于目标检测，学习尺度不变表示对于识别和定位目标至关重要。目前的工作主要从两个方面来解决这一挑战，即网络架构和数据扩充。</p>
+<p>目前，多尺度特征被广泛应用于高层目标识别中，以提高多尺度目标的识别性能。特征金字塔网络(Feature Pyramid Network, FPN)是一种常用的多层特征融合方法，利用其多尺度表达能力衍生出许多检测精度较高的网络，如Mask R-CNN和RetinaNet。</p>
+<p>值得注意的是，由于功能通道的减少，特征图会出现信息丢失，并且在其他level的特征图中只包含一些不太相关的上下文信息。</p>
+<p>此外，使用FPN会导致网络过分注重Low-level特征的优化，有时会导致对大规模目标的检测精度降低。针对这一问题，提出了一种简单而有效的方法，即感受野金字塔(RFP)，以增强特征金字塔的表示能力，并驱动网络学习最优的特征融合模式。</p>
+<h3 id="2-2-数据增强"><a href="#2-2-数据增强" class="headerlink" title="2.2 数据增强"></a>2.2 数据增强</h3><p>数据增强已被广泛应用于网络优化，并被证明有利于视觉任务，可以提高CNN的性能，防止过拟合，且易于实现。</p>
+<p>数据增强方法大致可以分为颜色操作(如亮度、对比度和颜色投射)和几何操作(如缩放、翻转、平移和缩放)。</p>
+<p>这些增强操作通过数据扭曲或过采样人为地扩大了训练数据集的大小。</p>
+<p>Lv等人提出了五种针对人脸图像的数据增强方法，包括landmark抖动和四种合成方法(发型、眼镜、姿势、照明)。</p>
+<p>Nair等人对训练数据应用了两种形式的数据增强。一种是随机裁剪和水平反射，另一种是通过在颜色空间上应用PCA来改变RGB通道的强度。这些常用的方法只是做简单的转换，不能满足复杂情况的需求。</p>
+<p>Dwibedi等人通过cut-paste策略提高了检测性能。</p>
+<p>此外，InstaBoost使用带注释的实例mask和位置概率图来增强训练图像。</p>
+<p>YOLOv4和Stitcher引入了包含重新缩放子图像的Mosaic输入，这也在YOLOv5中使用。然而，这些数据增强实现是手工设计的，最佳的增强策略是特定于数据集的。</p>
+<p>为了避免数据增强的数据特定性质，最近的工作集中在直接从数据本身学习数据增强策略。Tran等人使用贝叶斯方法根据从训练集中学习到的分布生成增广数据。Cubuk等人提出了一种名为AutoAugment的数据增强新方法，用于自动搜索改进的数据增强策略。</p>
+<h2 id="3本文方法"><a href="#3本文方法" class="headerlink" title="3本文方法"></a>3本文方法</h2><h3 id="3-1-Improved-YOLOv5s架构"><a href="#3-1-Improved-YOLOv5s架构" class="headerlink" title="3.1 Improved YOLOv5s架构"></a>3.1 Improved YOLOv5s架构</h3><p>作为目前YOLO系列的最新版本，YOLOv5优越的灵活性使得它可以方便地快速部署在车辆硬件侧。YOLOv5包含YOLOv5s、YOLOv5m、YOLOv5l, YOLOv5x。</p>
+<p>YOLOv5s是YOLO系列中最小的版本，由于其内存大小为14.10M，更适合部署在车载移动硬件平台上，但其识别精度不能满足准确高效识别的要求，尤其是对小目标的识别。</p>
+<p>YOLOv5的基本框架可以分为4个部分:Input、Backbone、Neck和Prediction。</p>
+<p>Input部分通过拼接数据增强来丰富数据集，对硬件设备要求低，计算成本低。但是，这会导致数据集中原有的小目标变小，导致模型的泛化性能下降。</p>
+<p>Backbone部分主要由CSP模块组成，通过CSPDarknet53进行特征提取。</p>
+<p>在Neck中使用FPN和路径聚合网络(PANet)来聚合该阶段的图像特征。</p>
+<p>最后，网络进行目标预测并通过预测输出。</p>
+<p>本文引入AF-FPN和自动学习数据增强，解决模型大小与识别精度不兼容的问题，进一步提高模型的识别性能。用AF-FPN代替原来的FPN结构，提高了多尺度目标识别能力，在识别速度和精度之间进行了有效的权衡。此外，去除原网络中的Mosaic增强，根据自动学习数据增强策略使用最佳的数据增强方法来丰富数据集，提高训练效果。改进后的YOLOv5s网络结构如图1所示。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="http://mianbaoban-assets.oss-cn-shenzhen.aliyuncs.com/xinyu-images/MBXY-CR-2475c67134453dbc97d14d1e824172a8.png"></p>
+<p>图1 改进后的YOLOv5<br>在预测中，使用Generalized IoU (GIoU) Loss作为BBox的损失函数，使用加权的非最大抑制(NMS)方法NMS。损失函数如下:</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="http://mianbaoban-assets.oss-cn-shenzhen.aliyuncs.com/xinyu-images/MBXY-CR-16d5ef3a340a412bc0d57e421a705f9c.png"></p>
+<p>其中是覆盖和的最小方框。为ground-truth box,为predicted box。</p>
+<p>但是，当预测框在ground-truth 框内且预测框大小相同时，预测框与ground-truth框的相对位置无法区分。</p>
+<p>本文用Complete IoU(CIoU) Loss代替GIoU Loss。CIoU损失在考虑GIoU损失的基础上，考虑了BBox的重叠面积、中心点距离以及BBox长宽比的一致性。损失函数可以定义为:</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="http://mianbaoban-assets.oss-cn-shenzhen.aliyuncs.com/xinyu-images/MBXY-CR-28dae6e295685858b7c2449fa39bc6b8.png"></p>
+<p>其中是惩罚项，通过最小化两个BBox中心点之间的归一化距离来定义。和表示和的中心点，为欧几里得距离，c为覆盖两个方框的最小封闭方框的对角线长度。是一个正的权衡参数，衡量纵横比的一致性。</p>
+<p>权衡参数定义为:</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="http://mianbaoban-assets.oss-cn-shenzhen.aliyuncs.com/xinyu-images/MBXY-CR-ecb23a759ecdad7a8941753adc4d0a6a.png"></p>
+<p>其中重叠面积因子在回归中具有较高的优先级，特别是在非重叠情况下。</p>
+<h3 id="3-2-架构改进"><a href="#3-2-架构改进" class="headerlink" title="3.2 架构改进"></a>3.2 架构改进</h3><p>1、AF-FPN<br>AF-FPN在传统特征金字塔网络的基础上，增加了自适应注意力模块(AAM)和特征增强模块(FEM)。前者减少了特征通道，减少了高层特征图中上下文信息的丢失。后一部分增强了特征金字塔的表示，提高了推理速度，同时实现了最先进的性能。AF-FPN结构如图2所示。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="http://mianbaoban-assets.oss-cn-shenzhen.aliyuncs.com/xinyu-images/MBXY-CR-62b4052f91fe4a7953e265f87d14c892.png"></p>
+<p>图2 AF-FPN结构<br>输入图像通过多个卷积生成特征映射{C1, C2, C3, C4, C5}。C5通过AAM生成特征映射M6。M6与M5求和并通过自上而下的途径传播与较低层次的其他特征融合，通过扩展感受域每次融合后的有限元分析。PANet缩短了底层与顶层特征之间的信息路径。</p>
+<p>自适应注意模块的操作可以分为2个步骤：</p>
+<p>首先，通过自适应平均池化层获得不同尺度的多个上下文特征。池化系数为[0.1,0.5]，根据数据集的目标大小自适应变化。<br>其次，通过空间注意力机制，为每个特征图生成空间权值图。通过权重图融合上下文特征，生成包含多尺度上下文信息的新特征图。<br>2、AAM<br>AAM的具体结构如图3所示。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="http://mianbaoban-assets.oss-cn-shenzhen.aliyuncs.com/xinyu-images/MBXY-CR-ef25aace3bbf87784d249bafc0aa58b5.png"></p>
+<p>图3　AAM结构<br>作为自适应注意力模块的输入，C5的大小为S&#x3D;h×w，</p>
+<p>首先通过自适应池化层获得不同尺度的语义特征。<br>然后，每个上下文特征进行1×1卷积，以获得相同的通道维数256。利用双线性插值将它们上采样到S尺度，进行后续融合。空间注意力机制通过Concat层将3个上下文特征的通道进行合并；<br>然后特征图依次经过1×1卷积层、ReLU激活层、3×3卷积层和sigmoid激活层，为每个特征图生成相应的空间权值。生成的权值映射和合并通道后的特征映射经过Hadamard乘积操作，将其分离并添加到输入特征映射M5中，将上下文特征聚合为M6。<br>最终得到的特征图具有丰富的多尺度上下文信息，在一定程度上缓解了由于通道数量减少而造成的信息丢失。<br>3、FEM<br>FEM主要是根据检测到的交通标志尺度的不同，利用扩张卷积自适应地学习每个特征图中的不同感受野，从而提高多尺度目标检测识别的准确性。</p>
+<p>图4　FEM结构<br>如图4所示，它可以分为两部分:</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="http://mianbaoban-assets.oss-cn-shenzhen.aliyuncs.com/xinyu-images/MBXY-CR-d5c5f330d7f401c096d31d61e74c678e.png"></p>
+<p>多分支卷积层</p>
+<p>分支池化层</p>
+<p>多分支卷积层通过扩张卷积为输入特征图提供不同大小的感受野。利用平均池化层融合来自三个支路感受野的交通信息，提高多尺度精度预测。</p>
+<p>多分支卷积层包括扩张卷积、BN层和ReLU激活层。三个平行分支中的扩张卷积具有相同的内核大小，但扩张速率不同。具体来说，每个扩张卷积的核为3×3，不同分支的扩张速率d分别为1、3、5。</p>
+<p>扩展卷积支持指数扩展的感受野，而不损失分辨率。而在扩张卷积的卷积运算中，卷积核的元素是间隔的，空间的大小取决于膨胀率，这与标准卷积运算中卷积核的元素都是相邻的不同。</p>
+<p>卷积核由3×3更改为7×7，该层的感受野为7×7。扩张卷积的感受野公式为:</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="http://mianbaoban-assets.oss-cn-shenzhen.aliyuncs.com/xinyu-images/MBXY-CR-a031f9a8824f46096688ec34a449b219.png"></p>
+<p>其中k和分别表示kernel-size和膨胀率。d表示卷积的stride。</p>
+<p>分支池化层用于融合来自不同并行分支的信息，避免引入额外参数。在训练过程中，利用平均操作来平衡不同平行分支的表示，使单个分支在测试过程中实现推理。表达式如下:</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="http://mianbaoban-assets.oss-cn-shenzhen.aliyuncs.com/xinyu-images/MBXY-CR-2e89dddbd103d90f6b0bb0121c759972.png"></p>
+<p>其中表示分支池化层的输出。B表示并行分支的数量，这里设B &#x3D; 3。</p>
+<h3 id="3-3-数据增强"><a href="#3-3-数据增强" class="headerlink" title="3.3 数据增强"></a>3.3 数据增强</h3><p>扩展策略由搜索空间和搜索算法两部分组成。在搜索空间中，有S&#x3D;5个子策略，每个子策略由两个图像操作组成，依次应用。随机选择一个子策略并应用于当前图像。此外，每个操作还与两个超参数相关:应用操作的概率和操作的大小。</p>
+<p>在实验中使用的操作包括最新的数据增强方法，如Mosaic、SnapMix、Earsing、CutMix、Mixup和Translate X&#x2F;Y。在搜索空间中总共有15个操作。每个操作也有一个默认的幅度范围。将幅度的范围离散为D&#x3D;11等间距值，以便可以使用离散搜索算法来找到它们。</p>
+<p>类似地，还将对P&#x3D;10个值(均匀间距)进行操作的概率离散化。在个可能性的空间中找到每个子策略成为一个搜索问题。因此，包含5个子策略的搜索空间大约有可能性，需要一个高效的搜索算法来导航该空间。图5显示了搜索空间中包含5个子策略的策略。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="http://mianbaoban-assets.oss-cn-shenzhen.aliyuncs.com/xinyu-images/MBXY-CR-180ef093beb29cbe7ed749c5aa4bbc0c.png"></p>
+<p>图5<br>通过搜索空间，将搜索学习到的增广策略问题转化为离散优化问题。采用强化学习作为搜索算法，它包含两个部分:控制器RNN和训练算法。控制器RNN为递归神经网络，训练算法为近端策略优化(PPO)，学习率为0.00035。控制器RNN在每一步预测softmax产生的决策，然后将预测作为搜索空间的嵌入，送入下一步。控制器总共有30个softmax预测来预测5个子策略，每个子策略有2个操作，每个操作需要操作类型、大小和概率。将自动学习数据增强方法应用于TT100K数据集，然后使用通过训练获得的最佳数据增强策略。</p>
+<h2 id="4实验"><a href="#4实验" class="headerlink" title="4实验"></a>4实验</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="http://mianbaoban-assets.oss-cn-shenzhen.aliyuncs.com/xinyu-images/MBXY-CR-dfac4e6bd51bc3327df9586bbf3a5908.png"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="http://mianbaoban-assets.oss-cn-shenzhen.aliyuncs.com/xinyu-images/MBXY-CR-5a24668f19a5e349dbbc6f9b03f2ed31.png"></p>
+<h2 id="5参考"><a href="#5参考" class="headerlink" title="5参考"></a>5参考</h2><p>[1].  Improved YOLOv5 network for real-time multi-scale traffic sign detection</p>
+<p>[]: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2112.08782v1">https://arxiv.org/abs/2112.08782v1</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">阿良</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2025/05/21/possibleupforyolov5/">http://example.com/2025/05/21/possibleupforyolov5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">AlanWu的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201408%2F02%2F20140802152254_34MMf.png&amp;refer=http%3A%2F%2Fb-ssl.duitang.com&amp;app=2002&amp;size=f9999,10000&amp;q=a80&amp;n=0&amp;g=0n&amp;fmt=auto?sec=1651475808&amp;t=47842cdefc4b54753683ee8e7ef0b648" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/05/21/shanghaidaxueyolo/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img1.baidu.com/it/u=2256398362,2776889111&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=PNG?w=499&amp;h=299" onerror="onerror=null;src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">上海交大提出CDNet：基于改进YOLOv5的斑马线和汽车过线行为检测</div></div></a></div><div class="next-post pull-right"><a href="/2025/05/21/hexo%20command/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic1.16pic.com%2F00%2F01%2F33%2F16pic_133629_b.jpg&amp;refer=http%3A%2F%2Fpic1.16pic.com&amp;app=2002&amp;size=f9999,10000&amp;q=a80&amp;n=0&amp;g=0n&amp;fmt=auto?sec=1651475751&amp;t=a2d265b9971c3bb8722e6258af9662d6" onerror="onerror=null;src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Hexo常用命令</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic3.zhimg.com/80/v2-741506174e170418d38dba06563b41b7_720w.jpg?source=1940ef5c" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">阿良</div><div class="author-info__description">不必为昨天的泪而弄湿今天的阳光</div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">10</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://blog.csdn.net/blink182007?type=blog"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://graph.qq.com/oauth2.0/show?which=Login&amp;display=pc&amp;response_type=code&amp;client_id=101559500&amp;redirect_uri=https:%2F%2Fcpo.qq.com%2Fconnect%2Fcallback&amp;scope=get_user_info" target="_blank" title="QQ"><i class="iconfont icon-qq"></i></a><a class="social-icon" href="https://filehelper.weixin.qq.com" target="_blank" title="微信"><i class="iconfont icon-weixin"></i></a><a class="social-icon" href="https://ddrk.me" target="_blank" title="低端影视"><i class="iconfont icon-dianyingyuan"></i></a><a class="social-icon" href="https://www.chaoxing.com" target="_blank" title="超星学习通"><i class="iconfont icon-menhuchangyongyingyongxitongICONyuande_chaoxingjiaoxuepingtai"></i></a><a class="social-icon" href="https://blog.csdn.net/blink182007?type=blog" target="_blank" title="追随我CSDN"><i class="iconfont icon-csdn"></i></a><a class="social-icon" href="https://www.cnki.net" target="_blank" title="中国知网"><i class="iconfont icon-zhiwang"></i></a><a class="social-icon" href="https://v.qq.com/" target="_blank" title="腾讯视频"><i class="iconfont icon-tengxunvideo"></i></a><a class="social-icon" href="http://www.4399.com/" target="_blank" title="4399小游戏"><i class="iconfont icon-youxiwang"></i></a><a class="social-icon" href="https://www.iqiyi.com/" target="_blank" title="爱奇艺"><i class="iconfont icon-aiqiyi"></i></a><a class="social-icon" href="https://www.baidu.com" target="_blank" title="百度一下"><i class="iconfont icon-icon_baidulogo"></i></a><a class="social-icon" href="https://www.zhihu.com/people/zhao-mi-nian" target="_blank" title="知乎"><i class="iconfont icon-zhihu"></i></a><a class="social-icon" href="https://weibo.com/u/7191404064" target="_blank" title="新浪微博"><i class="iconfont icon-xinlangweibo"></i></a><a class="social-icon" href="https://www.bilibili.com" target="_blank" title="哔哩哔哩"><i class="iconfont icon-bilibili"></i></a><a class="social-icon" href="https://web.shanbay.com/web/users/243370675/zone" target="_blank" title="扇贝单词"><i class="iconfont icon-kaoyanyingyu"></i></a><a class="social-icon" href="https://www.iqihang.com/ark/record/11098/3726/1334926/158134587/3/72/2/3278" target="_blank" title="考研数学"><i class="iconfont icon-Group45611"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到夜之城</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">1介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="toc-number">2.</span> <span class="toc-text">2相关工作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%9F%BA%E4%BA%8ECNN%E7%9A%84%E4%BA%A4%E9%80%9A%E6%A0%87%E8%AF%86%E6%A3%80%E6%B5%8B"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 基于CNN的交通标识检测</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 数据增强</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E6%9C%AC%E6%96%87%E6%96%B9%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">3本文方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-Improved-YOLOv5s%E6%9E%B6%E6%9E%84"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 Improved YOLOv5s架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E6%9E%B6%E6%9E%84%E6%94%B9%E8%BF%9B"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 架构改进</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA"><span class="toc-number">3.3.</span> <span class="toc-text">3.3 数据增强</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%E5%AE%9E%E9%AA%8C"><span class="toc-number">4.</span> <span class="toc-text">4实验</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5%E5%8F%82%E8%80%83"><span class="toc-number">5.</span> <span class="toc-text">5参考</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/05/21/yoloweihua/" title="YoloV5实战：手把手教物体检测——YoloV5"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img0.baidu.com/it/u=604234677,3784485538&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=PNG?w=464&amp;h=332" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="YoloV5实战：手把手教物体检测——YoloV5"/></a><div class="content"><a class="title" href="/2025/05/21/yoloweihua/" title="YoloV5实战：手把手教物体检测——YoloV5">YoloV5实战：手把手教物体检测——YoloV5</a><time datetime="2025-05-21T09:42:59.963Z" title="发表于 2025-05-21 17:42:59">2025-05-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/21/yolome/" title="初学入门YOLOv5手势识别之制作并训练自己的数据集"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="http://mms2.baidu.com/it/u=1541053178,3942721378&amp;fm=253&amp;app=138&amp;f=JPEG&amp;fmt=auto&amp;q=75?w=474&amp;h=251" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="初学入门YOLOv5手势识别之制作并训练自己的数据集"/></a><div class="content"><a class="title" href="/2025/05/21/yolome/" title="初学入门YOLOv5手势识别之制作并训练自己的数据集">初学入门YOLOv5手势识别之制作并训练自己的数据集</a><time datetime="2025-05-21T09:42:59.962Z" title="发表于 2025-05-21 17:42:59">2025-05-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/21/yolo/" title="目标检测：单阶段YOLOv5及其相关应用介绍"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img0.baidu.com/it/u=3756588693,3502079798&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=GIF?w=499&amp;h=298" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="目标检测：单阶段YOLOv5及其相关应用介绍"/></a><div class="content"><a class="title" href="/2025/05/21/yolo/" title="目标检测：单阶段YOLOv5及其相关应用介绍">目标检测：单阶段YOLOv5及其相关应用介绍</a><time datetime="2025-05-21T09:42:59.906Z" title="发表于 2025-05-21 17:42:59">2025-05-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/21/sony1/" title="索尼微单编年史"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic3.zhimg.com/80/v2-05109d3d7158aa8a6dd0aa8bf74c07bc_r.jpg" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="索尼微单编年史"/></a><div class="content"><a class="title" href="/2025/05/21/sony1/" title="索尼微单编年史">索尼微单编年史</a><time datetime="2025-05-21T09:42:59.904Z" title="发表于 2025-05-21 17:42:59">2025-05-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/21/shanghaidaxueyolo/" title="上海交大提出CDNet：基于改进YOLOv5的斑马线和汽车过线行为检测"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img1.baidu.com/it/u=2256398362,2776889111&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=PNG?w=499&amp;h=299" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="上海交大提出CDNet：基于改进YOLOv5的斑马线和汽车过线行为检测"/></a><div class="content"><a class="title" href="/2025/05/21/shanghaidaxueyolo/" title="上海交大提出CDNet：基于改进YOLOv5的斑马线和汽车过线行为检测">上海交大提出CDNet：基于改进YOLOv5的斑马线和汽车过线行为检测</a><time datetime="2025-05-21T09:42:59.903Z" title="发表于 2025-05-21 17:42:59">2025-05-21</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By 阿良</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">本地搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="/js/search/local-search.js"></script><script>var endLoading = function () {
+  document.body.style.overflow = 'auto';
+  document.getElementById('loading-box').classList.add("loaded")
+}
+window.addEventListener('load',endLoading)</script><div class="js-pjax"><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://twikoo-5li1em5hj-wcelll.vercel.app/',
+      region: '',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.vemoji)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo-5li1em5hj-wcelll.vercel.app/',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      document.getElementById('twikoo-count').innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div><div class="aplayer no-destroy" data-id="509265479" data-server="netease" data-type="playlist" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-preload="none" data-autoplay="false" muted></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="true"></script><script src="//code.tidio.co/9kuxvjbgybmbb3e1bz7iv4n9y3y5crqm.js" async="async"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  typeof preloader === 'object' && preloader.initLoading()
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script>var endLoading = function () {
+  document.body.style.overflow = 'auto';
+  document.getElementById('loading-box').classList.add("loaded")
+}
+window.addEventListener('load',endLoading)</script></body></html><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script type="text/javascript" src="/js/crash_cheat.js"></script>

@@ -1,0 +1,452 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Detectron2实战案例 | AlanWu的博客</title><meta name="keywords" content="opencv，deep Learning"><meta name="author" content="阿良"><meta name="copyright" content="阿良"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="最近几个月有在跑detectron2和yolof但是遇到了很多困难，下次出一期安装detectron2的教程，其实可以搬运来自我自己的csdn写的内容也可以的 最近概况：最近在学习一些视觉的内容detectron2还有yolof，遇到了很多的问题，在csdn上基本上都可以寻找到相关答案的 https:&#x2F;&#x2F;blog.csdn.net&#x2F;blink182007?type&#x3D;blog    “我的csdn主">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Detectron2实战案例">
+<meta property="og:url" content="http://example.com/2025/05/21/Detectron2yolof/index.html">
+<meta property="og:site_name" content="AlanWu的博客">
+<meta property="og:description" content="最近几个月有在跑detectron2和yolof但是遇到了很多困难，下次出一期安装detectron2的教程，其实可以搬运来自我自己的csdn写的内容也可以的 最近概况：最近在学习一些视觉的内容detectron2还有yolof，遇到了很多的问题，在csdn上基本上都可以寻找到相关答案的 https:&#x2F;&#x2F;blog.csdn.net&#x2F;blink182007?type&#x3D;blog    “我的csdn主">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-30a9500b5ebf9347aae5b74404229d07_r.jpg">
+<meta property="article:published_time" content="2025-05-21T09:42:59.875Z">
+<meta property="article:modified_time" content="2022-05-15T06:41:45.734Z">
+<meta property="article:author" content="阿良">
+<meta property="article:tag" content="opencv，deep Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic2.zhimg.com/80/v2-30a9500b5ebf9347aae5b74404229d07_r.jpg"><link rel="shortcut icon" href="https://pic2.zhimg.com/80/v2-90c7858a0c40298cc6da5a4e7ac671de_xl.jpg"><link rel="canonical" href="http://example.com/2025/05/21/Detectron2yolof/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Detectron2实战案例',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-05-15 14:41:45'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><link rel="stylesheet" href="APlayer.min.css"><div id="aplayer"></div><script src="https://cdn.jsdelivr.net/gh/radium-bit/res@master/live2d/autoload.js" async></script><script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js" async></script><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/iconfont.css" media="defer" onload="this.media='all'"><meta name="generator" content="Hexo 6.1.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic3.zhimg.com/80/v2-741506174e170418d38dba06563b41b7_720w.jpg?source=1940ef5c" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">10</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/musics/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://pic2.zhimg.com/80/v2-30a9500b5ebf9347aae5b74404229d07_r.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">AlanWu的博客</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/musics/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Detectron2实战案例</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-05-21T09:42:59.875Z" title="发表于 2025-05-21 17:42:59">2025-05-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-05-15T06:41:45.734Z" title="更新于 2022-05-15 14:41:45">2022-05-15</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Detectron2实战案例"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>最近几个月有在跑detectron2和yolof但是遇到了很多困难，下次出一期安装detectron2的教程，其实可以搬运来自我自己的csdn写的内容也可以的</p>
+<h1 id="最近概况："><a href="#最近概况：" class="headerlink" title="最近概况："></a>最近概况：</h1><p>最近在学习一些视觉的内容detectron2还有yolof，遇到了很多的问题，在csdn上基本上都可以寻找到相关答案的</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/blink182007?type=blog">https://blog.csdn.net/blink182007?type=blog</a>    “我的csdn主页”<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/blink182007/article/details/124222921?spm=1001.2014.3001.5502">https://blog.csdn.net/blink182007/article/details/124222921?spm=1001.2014.3001.5502</a>    “Detectron2安装踩坑记录（比较详细版）”</p>
+<p>基本格式示例：python demo&#x2F;demo.py –config-file configs&#x2F;COCO-Detection&#x2F;faster_rcnn_R_50_FPN_1x.yaml –input &#x2F;images&#x2F;1.jpg –output results –opt MODEL.WEIGHTS output&#x2F;model_0049999.pth</p>
+<p>python demo&#x2F;demo.py –config-file configs&#x2F;COCO-Detection&#x2F;faster_rcnn_R_50_FPN_1x.yaml –input images&#x2F;1.jpg –output results 可以但是没有结果</p>
+<p>我的detectron2模型本地存储地址”E:\anacondalib\detectron2-master\detectron2-master\configs\COCO-Detection\retinanet_R_50_FPN_3x.yaml”</p>
+<h1 id="参考文献来源："><a href="#参考文献来源：" class="headerlink" title="参考文献来源："></a><strong>参考文献来源：</strong></h1><p>参考来自博客网站： <a target="_blank" rel="noopener" href="https://blog.csdn.net/winorlose2000/article/details/112549795">https://blog.csdn.net/winorlose2000/article/details/112549795</a>    “(82条消息) Detectron2 快速开始，使用 WebCam 测试_GoCodingInMyWay的博客-CSDN博客”</p>
+<p>模型137849600&#x2F;model_final_f10217.pkl下载来自Modelzoo网站：detectron2&#x2F;MODEL_ZOO.md at main · facebookresearch&#x2F;detectron2 (github.com) <a target="_blank" rel="noopener" href="https://github.com/facebookresearch/detectron2/blob/main/MODEL_ZOO.md">https://github.com/facebookresearch/detectron2/blob/main/MODEL_ZOO.md</a>    “137849600&#x2F;model_final_f10217.pkl”</p>
+<p>Python demo&#x2F;demo.py –config-file configs&#x2F;COCO-Detection&#x2F;faster_rcnn_R_50_FPN_3x.yaml –webcam –output results –opt MODEL.WEIGHTS models&#x2F;model_final_280758.pkl 实时检测失败<br>Python demo&#x2F;demo.py –config-file configs&#x2F;COCO-Detection&#x2F;faster_rcnn_R_50_FPN_3x.yaml –input images&#x2F;4.jpg –output results –opt MODEL.WEIGHTS models&#x2F;model_final_280758.pkl</p>
+<p>Python demo&#x2F;demo.py –config-file configs&#x2F;LVISv1-InstanceSegmentation&#x2F;mask_rcnn_R_50_FPN_1x.yaml –input images&#x2F;5.jpg –output results –opt MODEL.WEIGHTS models&#x2F;model_final_571f7c.pkl 失败</p>
+<p>“E:\anacondalib\detectron2-master\detectron2-master\configs\COCO-InstanceSegmentation\mask_rcnn_R_50_FPN_1x.yaml”</p>
+<p>“E:\anacondalib\detectron2-master\detectron2-master\configs\LVISv1-InstanceSegmentation\mask_rcnn_R_50_FPN_1x.yaml”</p>
+<h1 id="检测代码和实例"><a href="#检测代码和实例" class="headerlink" title="检测代码和实例"></a><strong>检测代码和实例</strong></h1><p><strong>1.1 普通目标检测：</strong><br>Python demo&#x2F;demo.py –config-file configs&#x2F;COCO-Detection&#x2F;faster_rcnn_R_50_FPN_3x.yaml –input images&#x2F;1.jpg –output results –opt MODEL.WEIGHTS models&#x2F;model_final_280758.pkl<br>成功语句 普通目标检测√<br><strong>2.1 关键点检测：</strong><br>Python demo&#x2F;demo.py –config-file configs&#x2F;COCO-Keypoints&#x2F;keypoint_rcnn_R_50_FPN_3x.yaml –input images&#x2F;7.jpg –output results –opt MODEL.WEIGHTS models&#x2F;model_final_a6e10b.pkl 关键点检测成功√（”E:\anacondalib\detectron2-master\detectron2-master\configs\COCO-Keypoints\keypoint_rcnn_R_50_FPN_3x.yaml”<br>）（model_final_a6e10b.pkl）<br><strong>3.1 语义分割实例：</strong><br>Python demo&#x2F;demo.py –config-file configs&#x2F;COCO-PanopticSegmentation&#x2F;panoptic_fpn_R_50_3x.yaml –input images&#x2F;8.jpg –output results –opt MODEL.WEIGHTS models&#x2F;model_final_c10459.pkl 语义分割实例成功√<br>（”E:\anacondalib\detectron2-master\detectron2-master\configs\COCO-PanopticSegmentation\panoptic_fpn_R_50_3x.yaml”）<br>（model_final_c10459.pkl）<br><strong>4.1城市街道平面图实例</strong><br>Python demo&#x2F;demo.py –config-file configs\Cityscapes\mask_rcnn_R_50_FPN.yaml –input images&#x2F;13.jpg –output results –opt MODEL.WEIGHTS models&#x2F;model_final_af9cf5.pkl</p>
+<p><strong>5.1实时摄像头目标侦测</strong><br>Python demo&#x2F;demo.py –config-file configs&#x2F;COCO-Detection&#x2F;faster_rcnn_R_50_FPN_3x.yaml –webcam –output results –opt MODEL.WEIGHTS models&#x2F;model_final_280758.pkl<br>(成功)<br>对于报错ERROR——File “demo&#x2F;demo.py”, line 141, in <module><br>assert args.output is None, “output not yet supported with –webcam!”</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pica.zhimg.com/80/v2-a26cf9f2a62361c76efbebd8335c6664_r.jpg"></p>
+<p>将这一行注释掉即可<br>参考来自：(82条消息) Detectron2 快速开始，使用 WebCam 测试_GoCodingInMyWay的博客-CSDN博客</p>
+<p><strong>6.1实时语义分割检测</strong><br>Python demo&#x2F;demo.py –config-file configs&#x2F;COCO-PanopticSegmentation&#x2F;panoptic_fpn_R_50_3x.yaml –webcam –output results –opt MODEL.WEIGHTS models&#x2F;model_final_c10459.pkl<br>（成功）</p>
+<h1 id="跑YOLOF的相关内容："><a href="#跑YOLOF的相关内容：" class="headerlink" title="跑YOLOF的相关内容："></a>跑YOLOF的相关内容：</h1><p>训练命令为：</p>
+<p>***\Python .&#x2F;tools&#x2F;train_net.py –num-gpus 1 –config-file .&#x2F;configs&#x2F;yolof_R_50_C5_1x.yaml –eval-only MODEL.WEIGHTS output&#x2F;yolof&#x2F;R_50_C5_1x&#x2F;model_final.pth</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pica.zhimg.com/80/v2-3c23215c130871b12d8e02f3ffa686c2_r.jpg"></p>
+<p>报错如下，需要注册coco2017数据集，自己标注数据，按照b站小鸡炖技术来训练文件，寻找出路和改进方向方法。标签平滑？</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic4.zhimg.com/80/v2-76746e175d58736b67d0c556c9caf765_r.jpg"></p>
+<p><strong>参考一下：一位b站深度学习up的训练命令如上图所示。</strong></p>
+<p><strong>根据官方文档的内容——测试（test）命令如下：</strong></p>
+<p>python .&#x2F;tools&#x2F;train_net.py –num-gpus 1 –config-file .&#x2F;configs&#x2F;yolof_R_50_C5_1x.yaml –eval-only MODEL.WEIGHTS &#x2F;path&#x2F;to&#x2F;checkpoint_file</p>
+<p>运行过程如下（复制的比较多，可能有点长）<br>[04&#x2F;23 11:13:46 detectron2]: Environment info:</p>
+<hr>
+<p>sys.platform            win32<br>Python                  3.8.13 (default, Mar 28 2022, 06:59:08) [MSC v.1916 64 bit (AMD64)]<br>numpy                   1.21.5<br>detectron2              0.5 @e:\anacondalib\detectron2-master\detectron2-master\detectron2<br>Compiler                MSVC 192829923<br>CUDA compiler           CUDA 11.1<br>detectron2 arch flags   e:\anacondalib\detectron2-master\detectron2-master\detectron2_C.cp38-win_amd64.pyd; cannot find cuobjdump<br>DETECTRON2_ENV_MODULE   <not set><br>PyTorch                 1.9.0+cu111 @D:\Anaconda3\envs\detectron2\lib\site-packages\torch<br>PyTorch debug build     False<br>GPU available           Yes<br>GPU 0                   GeForce GTX 1650 (arch&#x3D;7.5)<br>Driver version          457.63<br>CUDA_HOME               C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1<br>Pillow                  9.0.1<br>torchvision             0.10.0+cu111 @D:\Anaconda3\envs\detectron2\lib\site-packages\torchvision<br>torchvision arch flags  D:\Anaconda3\envs\detectron2\lib\site-packages\torchvision_C.pyd; cannot find cuobjdump<br>fvcore                  0.1.5.post20220414<br>iopath                  0.1.9<br>cv2                     4.5.5</p>
+<hr>
+<p>PyTorch built with:</p>
+<ul>
+<li>C++ Version: 199711</li>
+<li>MSVC 192829337</li>
+<li>Intel(R) Math Kernel Library Version 2020.0.2 Product Build 20200624 for Intel(R) 64 architecture applications</li>
+<li>Intel(R) MKL-DNN v2.1.2 (Git Hash 98be7e8afa711dc9b66c8ff3504129cb82013cdb)</li>
+<li>OpenMP 2019</li>
+<li>CPU capability usage: AVX2</li>
+<li>CUDA Runtime 11.1</li>
+<li>NVCC architecture flags: -gencode;arch&#x3D;compute_37,code&#x3D;sm_37;-gencode;arch&#x3D;compute_50,code&#x3D;sm_50;-gencode;arch&#x3D;compute_60,code&#x3D;sm_60;-gencode;arch&#x3D;compute_61,code&#x3D;sm_61;-gencode;arch&#x3D;compute_70,code&#x3D;sm_70;-gencode;arch&#x3D;compute_75,code&#x3D;sm_75;-gencode;arch&#x3D;compute_80,code&#x3D;sm_80;-gencode;arch&#x3D;compute_86,code&#x3D;sm_86;-gencode;arch&#x3D;compute_37,code&#x3D;compute_37</li>
+<li>CuDNN 8.0.5</li>
+<li>Magma 2.5.4</li>
+<li>Build settings: BLAS_INFO&#x3D;mkl, BUILD_TYPE&#x3D;Release, CUDA_VERSION&#x3D;11.1, CUDNN_VERSION&#x3D;8.0.5, CXX_COMPILER&#x3D;C:&#x2F;w&#x2F;b&#x2F;windows&#x2F;tmp_bin&#x2F;sccache-cl.exe, CXX_FLAGS&#x3D;&#x2F;DWIN32 &#x2F;D_WINDOWS &#x2F;GR &#x2F;EHs<br>c &#x2F;w &#x2F;bigobj -DUSE_PTHREADPOOL -openmp:experimental -IC:&#x2F;w&#x2F;b&#x2F;windows&#x2F;mkl&#x2F;include -DNDEBUG -DUSE_KINETO -DLIBKINETO_NOCUPTI -DUSE_FBGEMM -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE,<br> LAPACK_INFO&#x3D;mkl, PERF_WITH_AVX&#x3D;1, PERF_WITH_AVX2&#x3D;1, PERF_WITH_AVX512&#x3D;1, TORCH_VERSION&#x3D;1.9.0, USE_CUDA&#x3D;ON, USE_CUDNN&#x3D;ON, USE_EXCEPTION_PTR&#x3D;1, USE_GFLAGS&#x3D;OFF, USE_GLOG&#x3D;OFF, USE_MKL&#x3D;ON, USE_MKLDNN&#x3D;ON, USE_MPI&#x3D;OFF, USE_NCCL&#x3D;OFF, USE_NNPACK&#x3D;OFF, USE_OPENMP&#x3D;ON,</li>
+</ul>
+<p>[04&#x2F;23 11:13:46 detectron2]: Command line arguments: Namespace(config_file&#x3D;’.&#x2F;configs&#x2F;yolof_R_50_C5_1x.yaml’, dist_url&#x3D;’tcp:&#x2F;&#x2F;127.0.0.1:49153’, eval_only&#x3D;True, machine_rank&#x3D;0, num_gpus&#x3D;1, num_machines&#x3D;1, opts&#x3D;[‘MODEL.WEIGHTS’, ‘&#x2F;path&#x2F;to&#x2F;checkpoint_file’], resume&#x3D;False)<br>[04&#x2F;23 11:13:47 detectron2]: Contents of args.config_file&#x3D;.&#x2F;configs&#x2F;yolof_R_50_C5_1x.yaml:<br><em>BASE</em>: “Base-YOLOF.yaml”<br>MODEL:<br>  WEIGHTS: “detectron2:&#x2F;&#x2F;ImageNetPretrained&#x2F;MSRA&#x2F;R-50.pkl”<br>  RESNETS:<br>    DEPTH: 50<br>OUTPUT_DIR: “output&#x2F;yolof&#x2F;R_50_C5_1x”</p>
+<p>[04&#x2F;23 11:13:47 detectron2]: Running with full config:<br>CUDNN_BENCHMARK: false<br>DATALOADER:<br>  ASPECT_RATIO_GROUPING: true<br>  FILTER_EMPTY_ANNOTATIONS: true<br>  NUM_WORKERS: 2<br>  REPEAT_THRESHOLD: 0.0<br>  SAMPLER_TRAIN: TrainingSampler<br>DATASETS:<br>  PRECOMPUTED_PROPOSAL_TOPK_TEST: 1000<br>  PRECOMPUTED_PROPOSAL_TOPK_TRAIN: 2000<br>  PROPOSAL_FILES_TEST: []<br>  PROPOSAL_FILES_TRAIN: []<br>  TEST:</p>
+<ul>
+<li>coco_2017_val<br>TRAIN:</li>
+<li>coco_2017_train<br>GLOBAL:<br>HACK: 1.0<br>INPUT:<br>CROP:<br>ENABLED: false<br>SIZE:<ul>
+<li>0.9</li>
+<li>0.9<br>TYPE: relative_range<br>DISTORTION:<br>ENABLED: false<br>EXPOSURE: 1.5<br>HUE: 0.1<br>SATURATION: 1.5<br>FORMAT: BGR<br>JITTER_CROP:<br>ENABLED: false<br>JITTER_RATIO: 0.3<br>MASK_FORMAT: polygon<br>MAX_SIZE_TEST: 1333<br>MAX_SIZE_TRAIN: 1333<br>MIN_SIZE_TEST: 800<br>MIN_SIZE_TRAIN:</li>
+</ul>
+</li>
+<li>800<br>MIN_SIZE_TRAIN_SAMPLING: choice<br>MOSAIC:<br>ENABLED: false<br>MIN_OFFSET: 0.2<br>MOSAIC_HEIGHT: 640<br>MOSAIC_WIDTH: 640<br>NUM_IMAGES: 4<br>POOL_CAPACITY: 1000<br>RANDOM_FLIP: horizontal<br>RESIZE:<br>ENABLED: false<br>SCALE_JITTER:<ul>
+<li>0.8</li>
+<li>1.2<br>SHAPE:</li>
+<li>640</li>
+<li>640<br>TEST_SHAPE:</li>
+<li>608</li>
+<li>608<br>SHIFT:<br>SHIFT_PIXELS: 32<br>MODEL:<br>ANCHOR_GENERATOR:<br>ANGLES:</li>
+<li><ul>
+<li>-90</li>
+<li>0</li>
+<li>90<br>ASPECT_RATIOS:</li>
+</ul>
+</li>
+<li><ul>
+<li>1.0<br>NAME: DefaultAnchorGenerator<br>OFFSET: 0.0<br>SIZES:</li>
+</ul>
+</li>
+<li><ul>
+<li>32</li>
+<li>64</li>
+<li>128</li>
+<li>256</li>
+<li>512<br>BACKBONE:<br>FREEZE_AT: 2<br>NAME: build_resnet_backbone<br>DARKNET:<br>DEPTH: 53<br>NORM: BN<br>OUT_FEATURES:</li>
+</ul>
+</li>
+<li>res5<br>RES5_DILATION: 1<br>WITH_CSP: true<br>DEVICE: cuda<br>FPN:<br>FUSE_TYPE: sum<br>IN_FEATURES: []<br>NORM: ‘’<br>OUT_CHANNELS: 256<br>KEYPOINT_ON: false<br>LOAD_PROPOSALS: false<br>MASK_ON: false<br>META_ARCHITECTURE: YOLOF<br>PANOPTIC_FPN:<br>COMBINE:<br>ENABLED: true<br>INSTANCES_CONFIDENCE_THRESH: 0.5<br>OVERLAP_THRESH: 0.5<br>STUFF_AREA_LIMIT: 4096<br>INSTANCE_LOSS_WEIGHT: 1.0<br>PIXEL_MEAN:</li>
+</ul>
+</li>
+<li>103.53</li>
+<li>116.28</li>
+<li>123.675<br>PIXEL_STD:</li>
+<li>1.0</li>
+<li>1.0</li>
+<li>1.0<br>PROPOSAL_GENERATOR:<br>MIN_SIZE: 0<br>NAME: RPN<br>RESNETS:<br>DEFORM_MODULATED: false<br>DEFORM_NUM_GROUPS: 1<br>DEFORM_ON_PER_STAGE:<ul>
+<li>false</li>
+<li>false</li>
+<li>false</li>
+<li>false<br>DEPTH: 50<br>NORM: FrozenBN<br>NUM_GROUPS: 1<br>OUT_FEATURES:</li>
+<li>res5<br>RES2_OUT_CHANNELS: 256<br>RES5_DILATION: 1<br>STEM_OUT_CHANNELS: 64<br>STRIDE_IN_1X1: true<br>WIDTH_PER_GROUP: 64<br>RETINANET:<br>BBOX_REG_LOSS_TYPE: smooth_l1<br>BBOX_REG_WEIGHTS: &amp;id002</li>
+<li>1.0</li>
+<li>1.0</li>
+<li>1.0</li>
+<li>1.0<br>FOCAL_LOSS_ALPHA: 0.25<br>FOCAL_LOSS_GAMMA: 2.0<br>IN_FEATURES:</li>
+<li>p3</li>
+<li>p4</li>
+<li>p5</li>
+<li>p6</li>
+<li>p7<br>IOU_LABELS:</li>
+<li>0</li>
+<li>-1</li>
+<li>1<br>IOU_THRESHOLDS:</li>
+<li>0.4</li>
+<li>0.5<br>NMS_THRESH_TEST: 0.5<br>NORM: ‘’<br>NUM_CLASSES: 80<br>NUM_CONVS: 4<br>PRIOR_PROB: 0.01<br>SCORE_THRESH_TEST: 0.05<br>SMOOTH_L1_LOSS_BETA: 0.1<br>TOPK_CANDIDATES_TEST: 1000<br>ROI_BOX_CASCADE_HEAD:<br>BBOX_REG_WEIGHTS:</li>
+<li>&amp;id001<ul>
+<li>10.0</li>
+<li>10.0</li>
+<li>5.0</li>
+<li>5.0</li>
+</ul>
+</li>
+<li><ul>
+<li>20.0</li>
+<li>20.0</li>
+<li>10.0</li>
+<li>10.0</li>
+</ul>
+</li>
+<li><ul>
+<li>30.0</li>
+<li>30.0</li>
+<li>15.0</li>
+<li>15.0<br>IOUS:</li>
+</ul>
+</li>
+<li>0.5</li>
+<li>0.6</li>
+<li>0.7<br>ROI_BOX_HEAD:<br>BBOX_REG_LOSS_TYPE: smooth_l1<br>BBOX_REG_LOSS_WEIGHT: 1.0<br>BBOX_REG_WEIGHTS: *id001<br>CLS_AGNOSTIC_BBOX_REG: false<br>CONV_DIM: 256<br>FC_DIM: 1024<br>NAME: ‘’<br>NORM: ‘’<br>NUM_CONV: 0<br>NUM_FC: 0<br>POOLER_RESOLUTION: 14<br>POOLER_SAMPLING_RATIO: 0<br>POOLER_TYPE: ROIAlignV2<br>SMOOTH_L1_BETA: 0.0<br>TRAIN_ON_PRED_BOXES: false<br>ROI_HEADS:<br>BATCH_SIZE_PER_IMAGE: 512<br>IN_FEATURES:</li>
+<li>res4<br>IOU_LABELS:</li>
+<li>0</li>
+<li>1<br>IOU_THRESHOLDS:</li>
+<li>0.5<br>NAME: Res5ROIHeads<br>NMS_THRESH_TEST: 0.5<br>NUM_CLASSES: 80<br>POSITIVE_FRACTION: 0.25<br>PROPOSAL_APPEND_GT: true<br>SCORE_THRESH_TEST: 0.05<br>ROI_KEYPOINT_HEAD:<br>CONV_DIMS:</li>
+<li>512</li>
+<li>512</li>
+<li>512</li>
+<li>512</li>
+<li>512</li>
+<li>512</li>
+<li>512</li>
+<li>512<br>LOSS_WEIGHT: 1.0<br>MIN_KEYPOINTS_PER_IMAGE: 1<br>NAME: KRCNNConvDeconvUpsampleHead<br>NORMALIZE_LOSS_BY_VISIBLE_KEYPOINTS: true<br>NUM_KEYPOINTS: 17<br>POOLER_RESOLUTION: 14<br>POOLER_SAMPLING_RATIO: 0<br>POOLER_TYPE: ROIAlignV2<br>ROI_MASK_HEAD:<br>CLS_AGNOSTIC_MASK: false<br>CONV_DIM: 256<br>NAME: MaskRCNNConvUpsampleHead<br>NORM: ‘’<br>NUM_CONV: 0<br>POOLER_RESOLUTION: 14<br>POOLER_SAMPLING_RATIO: 0<br>POOLER_TYPE: ROIAlignV2<br>RPN:<br>BATCH_SIZE_PER_IMAGE: 256<br>BBOX_REG_LOSS_TYPE: smooth_l1<br>BBOX_REG_LOSS_WEIGHT: 1.0<br>BBOX_REG_WEIGHTS: *id002<br>BOUNDARY_THRESH: -1<br>CONV_DIMS:</li>
+<li>-1<br>HEAD_NAME: StandardRPNHead<br>IN_FEATURES:</li>
+<li>res4<br>IOU_LABELS:</li>
+<li>0</li>
+<li>-1</li>
+<li>1<br>IOU_THRESHOLDS:</li>
+<li>0.3</li>
+<li>0.7<br>LOSS_WEIGHT: 1.0<br>NMS_THRESH: 0.7<br>POSITIVE_FRACTION: 0.5<br>POST_NMS_TOPK_TEST: 1000<br>POST_NMS_TOPK_TRAIN: 2000<br>PRE_NMS_TOPK_TEST: 6000<br>PRE_NMS_TOPK_TRAIN: 12000<br>SMOOTH_L1_BETA: 0.0<br>SEM_SEG_HEAD:<br>COMMON_STRIDE: 4<br>CONVS_DIM: 128<br>IGNORE_VALUE: 255<br>IN_FEATURES:</li>
+<li>p2</li>
+<li>p3</li>
+<li>p4</li>
+<li>p5<br>LOSS_WEIGHT: 1.0<br>NAME: SemSegFPNHead<br>NORM: GN<br>NUM_CLASSES: 54<br>WEIGHTS: &#x2F;path&#x2F;to&#x2F;checkpoint_file<br>YOLOF:<br>BOX_TRANSFORM:<br>ADD_CTR_CLAMP: true<br>BBOX_REG_WEIGHTS:<ul>
+<li>1.0</li>
+<li>1.0</li>
+<li>1.0</li>
+<li>1.0<br>CTR_CLAMP: 32<br>DECODER:<br>ACTIVATION: ReLU<br>CLS_NUM_CONVS: 2<br>IN_CHANNELS: 512<br>NORM: BN<br>NUM_ANCHORS: 5<br>NUM_CLASSES: 80<br>PRIOR_PROB: 0.01<br>REG_NUM_CONVS: 4<br>DETECTIONS_PER_IMAGE: 100<br>ENCODER:<br>ACTIVATION: ReLU<br>BACKBONE_LEVEL: res5<br>BLOCK_DILATIONS:</li>
+<li>2</li>
+<li>4</li>
+<li>6</li>
+<li>8<br>BLOCK_MID_CHANNELS: 128<br>IN_CHANNELS: 2048<br>NORM: BN<br>NUM_CHANNELS: 512<br>NUM_RESIDUAL_BLOCKS: 4<br>LOSSES:<br>BBOX_REG_LOSS_TYPE: giou<br>FOCAL_LOSS_ALPHA: 0.25<br>FOCAL_LOSS_GAMMA: 2.0<br>MATCHER:<br>TOPK: 4<br>NEG_IGNORE_THRESHOLD: 0.7<br>NMS_THRESH_TEST: 0.6<br>POS_IGNORE_THRESHOLD: 0.15<br>SCORE_THRESH_TEST: 0.05<br>TOPK_CANDIDATES_TEST: 1000<br>OUTPUT_DIR: output&#x2F;yolof&#x2F;R_50_C5_1x<br>SEED: -1<br>SOLVER:<br>AMP:<br>ENABLED: false<br>BACKBONE_MULTIPLIER: 0.334<br>BASE_LR: 0.12<br>BIAS_LR_FACTOR: 1.0<br>CHECKPOINT_PERIOD: 2500<br>CLIP_GRADIENTS:<br>CLIP_TYPE: value<br>CLIP_VALUE: 1.0<br>ENABLED: false<br>NORM_TYPE: 2.0<br>GAMMA: 0.1<br>IMS_PER_BATCH: 64<br>LR_SCHEDULER_NAME: WarmupMultiStepLR<br>MAX_ITER: 22500<br>MOMENTUM: 0.9<br>NESTEROV: false<br>REFERENCE_WORLD_SIZE: 0<br>STEPS:</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>15000</li>
+<li>20000<br>WARMUP_FACTOR: 0.00066667<br>WARMUP_ITERS: 1500<br>WARMUP_METHOD: linear<br>WEIGHT_DECAY: 0.0001<br>WEIGHT_DECAY_BIAS: 0.0001<br>WEIGHT_DECAY_NORM: 0.0<br>TEST:<br>AUG:<br>ENABLED: false<br>FLIP: true<br>MAX_SIZE: 4000<br>MIN_SIZES:<ul>
+<li>400</li>
+<li>500</li>
+<li>600</li>
+<li>700</li>
+<li>800</li>
+<li>900</li>
+<li>1000</li>
+<li>1100</li>
+<li>1200<br>DETECTIONS_PER_IMAGE: 100<br>EVAL_PERIOD: 0<br>EXPECTED_RESULTS: []<br>KEYPOINT_OKS_SIGMAS: []<br>PRECISE_BN:<br>ENABLED: false<br>NUM_ITER: 200<br>VERSION: 2<br>VIS_PERIOD: 0</li>
+</ul>
+</li>
+</ul>
+<p>[04&#x2F;23 11:13:47 detectron2]: Full config saved to output&#x2F;yolof&#x2F;R_50_C5_1x\config.yaml<br>[04&#x2F;23 11:13:47 d2.utils.env]: Using a generated random seed 47610603<br>[04&#x2F;23 11:13:53 d2.engine.defaults]: Model:<br>YOLOF(<br>  (backbone): ResNet(<br>    (stem): BasicStem(<br>      (conv1): Conv2d(<br>        3, 64, kernel_size&#x3D;(7, 7), stride&#x3D;(2, 2), padding&#x3D;(3, 3), bias&#x3D;False<br>        (norm): FrozenBatchNorm2d(num_features&#x3D;64, eps&#x3D;1e-05)<br>      )<br>    )<br>    (res2): Sequential(<br>      (0): BottleneckBlock(<br>        (shortcut): Conv2d(<br>          64, 256, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;256, eps&#x3D;1e-05)<br>        )<br>        (conv1): Conv2d(<br>          64, 64, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;64, eps&#x3D;1e-05)<br>        )<br>        (conv2): Conv2d(<br>          64, 64, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;64, eps&#x3D;1e-05)<br>        )<br>        (conv3): Conv2d(<br>          64, 256, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;256, eps&#x3D;1e-05)<br>        )<br>      )<br>      (1): BottleneckBlock(<br>        (conv1): Conv2d(<br>          256, 64, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;64, eps&#x3D;1e-05)<br>        )<br>        (conv2): Conv2d(<br>          64, 64, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;64, eps&#x3D;1e-05)<br>        )<br>        (conv3): Conv2d(<br>          64, 256, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;256, eps&#x3D;1e-05)<br>        )<br>      )<br>      (2): BottleneckBlock(<br>        (conv1): Conv2d(<br>          256, 64, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;64, eps&#x3D;1e-05)<br>        )<br>        (conv2): Conv2d(<br>          64, 64, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;64, eps&#x3D;1e-05)<br>        )<br>        (conv3): Conv2d(<br>          64, 256, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;256, eps&#x3D;1e-05)<br>        )<br>      )<br>    )<br>    (res3): Sequential(<br>      (0): BottleneckBlock(<br>        (shortcut): Conv2d(<br>          256, 512, kernel_size&#x3D;(1, 1), stride&#x3D;(2, 2), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;512, eps&#x3D;1e-05)<br>        )<br>        (conv1): Conv2d(<br>          256, 128, kernel_size&#x3D;(1, 1), stride&#x3D;(2, 2), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;128, eps&#x3D;1e-05)<br>        )<br>        (conv2): Conv2d(<br>          128, 128, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;128, eps&#x3D;1e-05)<br>        )<br>        (conv3): Conv2d(<br>          128, 512, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;512, eps&#x3D;1e-05)<br>        )<br>      )<br>      (1): BottleneckBlock(<br>        (conv1): Conv2d(<br>          512, 128, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;128, eps&#x3D;1e-05)<br>        )<br>        (conv2): Conv2d(<br>          128, 128, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;128, eps&#x3D;1e-05)<br>        )<br>        (conv3): Conv2d(<br>          128, 512, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;512, eps&#x3D;1e-05)<br>        )<br>      )<br>      (2): BottleneckBlock(<br>        (conv1): Conv2d(<br>          512, 128, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;128, eps&#x3D;1e-05)<br>        )<br>        (conv2): Conv2d(<br>          128, 128, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;128, eps&#x3D;1e-05)<br>        )<br>        (conv3): Conv2d(<br>          128, 512, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;512, eps&#x3D;1e-05)<br>        )<br>      )<br>      (3): BottleneckBlock(<br>        (conv1): Conv2d(<br>          512, 128, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;128, eps&#x3D;1e-05)<br>        )<br>        (conv2): Conv2d(<br>          128, 128, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;128, eps&#x3D;1e-05)<br>        )<br>        (conv3): Conv2d(<br>          128, 512, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;512, eps&#x3D;1e-05)<br>        )<br>      )<br>    )<br>    (res4): Sequential(<br>      (0): BottleneckBlock(<br>        (shortcut): Conv2d(<br>          512, 1024, kernel_size&#x3D;(1, 1), stride&#x3D;(2, 2), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;1024, eps&#x3D;1e-05)<br>        )<br>        (conv1): Conv2d(<br>          512, 256, kernel_size&#x3D;(1, 1), stride&#x3D;(2, 2), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;256, eps&#x3D;1e-05)<br>        )<br>        (conv2): Conv2d(<br>          256, 256, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;256, eps&#x3D;1e-05)<br>        )<br>        (conv3): Conv2d(<br>          256, 1024, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;1024, eps&#x3D;1e-05)<br>        )<br>      )<br>      (1): BottleneckBlock(<br>        (conv1): Conv2d(<br>          1024, 256, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;256, eps&#x3D;1e-05)<br>        )<br>        (conv2): Conv2d(<br>          256, 256, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;256, eps&#x3D;1e-05)<br>        )<br>        (conv3): Conv2d(<br>          256, 1024, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;1024, eps&#x3D;1e-05)<br>        )<br>      )<br>      (2): BottleneckBlock(<br>        (conv1): Conv2d(<br>          1024, 256, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;256, eps&#x3D;1e-05)<br>        )<br>        (conv2): Conv2d(<br>          256, 256, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;256, eps&#x3D;1e-05)<br>        )<br>        (conv3): Conv2d(<br>          256, 1024, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;1024, eps&#x3D;1e-05)<br>        )<br>      )<br>      (3): BottleneckBlock(<br>        (conv1): Conv2d(<br>          1024, 256, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;256, eps&#x3D;1e-05)<br>        )<br>        (conv2): Conv2d(<br>          256, 256, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;256, eps&#x3D;1e-05)<br>        )<br>        (conv3): Conv2d(<br>          256, 1024, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;1024, eps&#x3D;1e-05)<br>        )<br>      )<br>      (4): BottleneckBlock(<br>        (conv1): Conv2d(<br>          1024, 256, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;256, eps&#x3D;1e-05)<br>        )<br>        (conv2): Conv2d(<br>          256, 256, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;256, eps&#x3D;1e-05)<br>        )<br>        (conv3): Conv2d(<br>          256, 1024, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;1024, eps&#x3D;1e-05)<br>        )<br>      )<br>      (5): BottleneckBlock(<br>        (conv1): Conv2d(<br>          1024, 256, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;256, eps&#x3D;1e-05)<br>        )<br>        (conv2): Conv2d(<br>          256, 256, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;256, eps&#x3D;1e-05)<br>        )<br>        (conv3): Conv2d(<br>          256, 1024, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;1024, eps&#x3D;1e-05)<br>        )<br>      )<br>    )<br>    (res5): Sequential(<br>      (0): BottleneckBlock(<br>        (shortcut): Conv2d(<br>          1024, 2048, kernel_size&#x3D;(1, 1), stride&#x3D;(2, 2), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;2048, eps&#x3D;1e-05)<br>        )<br>        (conv1): Conv2d(<br>          1024, 512, kernel_size&#x3D;(1, 1), stride&#x3D;(2, 2), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;512, eps&#x3D;1e-05)<br>        )<br>        (conv2): Conv2d(<br>          512, 512, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;512, eps&#x3D;1e-05)<br>        )<br>        (conv3): Conv2d(<br>          512, 2048, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;2048, eps&#x3D;1e-05)<br>        )<br>      )<br>      (1): BottleneckBlock(<br>        (conv1): Conv2d(<br>          2048, 512, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;512, eps&#x3D;1e-05)<br>        )<br>        (conv2): Conv2d(<br>          512, 512, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;512, eps&#x3D;1e-05)<br>        )<br>        (conv3): Conv2d(<br>          512, 2048, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;2048, eps&#x3D;1e-05)<br>        )<br>      )<br>      (2): BottleneckBlock(<br>        (conv1): Conv2d(<br>          2048, 512, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;512, eps&#x3D;1e-05)<br>        )<br>        (conv2): Conv2d(<br>          512, 512, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;512, eps&#x3D;1e-05)<br>        )<br>        (conv3): Conv2d(<br>          512, 2048, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1), bias&#x3D;False<br>          (norm): FrozenBatchNorm2d(num_features&#x3D;2048, eps&#x3D;1e-05)<br>        )<br>      )<br>    )<br>  )<br>  (encoder): DilatedEncoder(<br>    (lateral_conv): Conv2d(2048, 512, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1))<br>    (lateral_norm): BatchNorm2d(512, eps&#x3D;1e-05, momentum&#x3D;0.1, affine&#x3D;True, track_running_stats&#x3D;True)<br>    (fpn_conv): Conv2d(512, 512, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1))<br>    (fpn_norm): BatchNorm2d(512, eps&#x3D;1e-05, momentum&#x3D;0.1, affine&#x3D;True, track_running_stats&#x3D;True)<br>    (dilated_encoder_blocks): Sequential(<br>      (0): Bottleneck(<br>        (conv1): Sequential(<br>          (0): Conv2d(512, 128, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1))<br>          (1): BatchNorm2d(128, eps&#x3D;1e-05, momentum&#x3D;0.1, affine&#x3D;True, track_running_stats&#x3D;True)<br>          (2): ReLU(inplace&#x3D;True)<br>        )<br>        (conv2): Sequential(<br>          (0): Conv2d(128, 128, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(2, 2), dilation&#x3D;(2, 2))<br>          (1): BatchNorm2d(128, eps&#x3D;1e-05, momentum&#x3D;0.1, affine&#x3D;True, track_running_stats&#x3D;True)<br>          (2): ReLU(inplace&#x3D;True)<br>        )<br>        (conv3): Sequential(<br>          (0): Conv2d(128, 512, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1))<br>          (1): BatchNorm2d(512, eps&#x3D;1e-05, momentum&#x3D;0.1, affine&#x3D;True, track_running_stats&#x3D;True)<br>          (2): ReLU(inplace&#x3D;True)<br>        )<br>      )<br>      (1): Bottleneck(<br>        (conv1): Sequential(<br>          (0): Conv2d(512, 128, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1))<br>          (1): BatchNorm2d(128, eps&#x3D;1e-05, momentum&#x3D;0.1, affine&#x3D;True, track_running_stats&#x3D;True)<br>          (2): ReLU(inplace&#x3D;True)<br>        )<br>        (conv2): Sequential(<br>          (0): Conv2d(128, 128, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(4, 4), dilation&#x3D;(4, 4))<br>          (1): BatchNorm2d(128, eps&#x3D;1e-05, momentum&#x3D;0.1, affine&#x3D;True, track_running_stats&#x3D;True)<br>          (2): ReLU(inplace&#x3D;True)<br>        )<br>        (conv3): Sequential(<br>          (0): Conv2d(128, 512, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1))<br>          (1): BatchNorm2d(512, eps&#x3D;1e-05, momentum&#x3D;0.1, affine&#x3D;True, track_running_stats&#x3D;True)<br>          (2): ReLU(inplace&#x3D;True)<br>        )<br>      )<br>      (2): Bottleneck(<br>        (conv1): Sequential(<br>          (0): Conv2d(512, 128, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1))<br>          (1): BatchNorm2d(128, eps&#x3D;1e-05, momentum&#x3D;0.1, affine&#x3D;True, track_running_stats&#x3D;True)<br>          (2): ReLU(inplace&#x3D;True)<br>        )<br>        (conv2): Sequential(<br>          (0): Conv2d(128, 128, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(6, 6), dilation&#x3D;(6, 6))<br>          (1): BatchNorm2d(128, eps&#x3D;1e-05, momentum&#x3D;0.1, affine&#x3D;True, track_running_stats&#x3D;True)<br>          (2): ReLU(inplace&#x3D;True)<br>        )<br>        (conv3): Sequential(<br>          (0): Conv2d(128, 512, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1))<br>          (1): BatchNorm2d(512, eps&#x3D;1e-05, momentum&#x3D;0.1, affine&#x3D;True, track_running_stats&#x3D;True)<br>          (2): ReLU(inplace&#x3D;True)<br>        )<br>      )<br>      (3): Bottleneck(<br>        (conv1): Sequential(<br>          (0): Conv2d(512, 128, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1))<br>          (1): BatchNorm2d(128, eps&#x3D;1e-05, momentum&#x3D;0.1, affine&#x3D;True, track_running_stats&#x3D;True)<br>          (2): ReLU(inplace&#x3D;True)<br>        )<br>        (conv2): Sequential(<br>          (0): Conv2d(128, 128, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(8, 8), dilation&#x3D;(8, 8))<br>          (1): BatchNorm2d(128, eps&#x3D;1e-05, momentum&#x3D;0.1, affine&#x3D;True, track_running_stats&#x3D;True)<br>          (2): ReLU(inplace&#x3D;True)<br>        )<br>        (conv3): Sequential(<br>          (0): Conv2d(128, 512, kernel_size&#x3D;(1, 1), stride&#x3D;(1, 1))<br>          (1): BatchNorm2d(512, eps&#x3D;1e-05, momentum&#x3D;0.1, affine&#x3D;True, track_running_stats&#x3D;True)<br>          (2): ReLU(inplace&#x3D;True)<br>        )<br>      )<br>    )<br>  )<br>  (decoder): Decoder(<br>    (cls_subnet): Sequential(<br>      (0): Conv2d(512, 512, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1))<br>      (1): BatchNorm2d(512, eps&#x3D;1e-05, momentum&#x3D;0.1, affine&#x3D;True, track_running_stats&#x3D;True)<br>      (2): ReLU(inplace&#x3D;True)<br>      (3): Conv2d(512, 512, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1))<br>      (4): BatchNorm2d(512, eps&#x3D;1e-05, momentum&#x3D;0.1, affine&#x3D;True, track_running_stats&#x3D;True)<br>      (5): ReLU(inplace&#x3D;True)<br>    )<br>    (bbox_subnet): Sequential(<br>      (0): Conv2d(512, 512, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1))<br>      (1): BatchNorm2d(512, eps&#x3D;1e-05, momentum&#x3D;0.1, affine&#x3D;True, track_running_stats&#x3D;True)<br>      (2): ReLU(inplace&#x3D;True)<br>      (3): Conv2d(512, 512, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1))<br>      (4): BatchNorm2d(512, eps&#x3D;1e-05, momentum&#x3D;0.1, affine&#x3D;True, track_running_stats&#x3D;True)<br>      (5): ReLU(inplace&#x3D;True)<br>      (6): Conv2d(512, 512, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1))<br>      (7): BatchNorm2d(512, eps&#x3D;1e-05, momentum&#x3D;0.1, affine&#x3D;True, track_running_stats&#x3D;True)<br>      (8): ReLU(inplace&#x3D;True)<br>      (9): Conv2d(512, 512, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1))<br>      (10): BatchNorm2d(512, eps&#x3D;1e-05, momentum&#x3D;0.1, affine&#x3D;True, track_running_stats&#x3D;True)<br>      (11): ReLU(inplace&#x3D;True)<br>    )<br>    (cls_score): Conv2d(512, 400, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1))<br>    (bbox_pred): Conv2d(512, 20, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1))<br>    (object_pred): Conv2d(512, 5, kernel_size&#x3D;(3, 3), stride&#x3D;(1, 1), padding&#x3D;(1, 1))<br>  )<br>  (anchor_generator): DefaultAnchorGenerator(<br>    return self.load(path, checkpointables&#x3D;[])<br>  File “e:\anacondalib\detectron2-master\detectron2-master\detectron2\checkpoint\detection_checkpoint.py”, line 53, in load<br>    ret &#x3D; super().load(path, *args, **kwargs)<br>  File “D:\Anaconda3\envs\detectron2\lib\site-packages\fvcore\common\checkpoint.py”, line 153, in load<br>    assert os.path.isfile(path), “Checkpoint {} not found!”.format(path)<br>AssertionError: Checkpoint &#x2F;path&#x2F;to&#x2F;checkpoint_file not found!<br>接下来我们逐步实现yolof能够跑起来<br>首先我们安装labelme<br>这一部分参考来自(84条消息) Labelme安装及使用教程_Marlowee的博客-CSDN博客_labelme安装 <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43427721/article/details/107122775">https://blog.csdn.net/weixin_43427721/article/details/107122775</a>    “(84条消息) Labelme安装及使用教程_Marlowee的博客-CSDN博客_labelme安装”</p>
+<h2 id="7-1报错与解决"><a href="#7-1报错与解决" class="headerlink" title="7.1报错与解决"></a>7.1报错与解决</h2><p>报错：KeyError: “Dataset ‘test’ is not registered! Available datasets are: coco_2014_train, coco_2014_val, coco_2014_minival, coco_2014_minival_100, coco_2014_valminusminival, coco_2017_tra<br>in, coco_2017_val, coco_2017_test, coco_2017_test-dev, coco_2017_val_100, keypoints_coco_2014_train, keypoints_coco_2014_val, keypoints_coco_2014_minival, keypoints_coco_2014_valminus<br>minival, keypoints_coco_2014_minival_100, keypoints_coco_2017_train, keypoints_coco_2017_val, keypoints_coco_2017_val_100, coco_2017_train_panoptic_separated, coco_2017_train_panoptic<br>_stuffonly, coco_2017_train_panoptic, coco_2017_val_panoptic_separated, coco_2017_val_panoptic_stuffonly, coco_2017_val_panoptic, coco_2017_val_100_panoptic_separated, coco_2017_val_1<br>00_panoptic_stuffonly, coco_2017_val_100_panoptic, lvis_v1_train, lvis_v1_val, lvis_v1_test_dev, lvis_v1_test_challenge, lvis_v0.5_train, lvis_v0.5_val, lvis_v0.5_val_rand_100, lvis_v<br>0.5_test, lvis_v0.5_train_cocofied, lvis_v0.5_val_cocofied, cityscapes_fine_instance_seg_train, cityscapes_fine_sem_seg_train, cityscapes_fine_instance_seg_val, cityscapes_fine_sem_se<br>g_val, cityscapes_fine_instance_seg_test, cityscapes_fine_sem_seg_test, cityscapes_fine_panoptic_train, cityscapes_fine_panoptic_val, voc_2007_trainval, voc_2007_train, voc_2007_val, voc_2007_test, voc_2012_trainval, voc_2012_train, voc_2012_val, ade20k_sem_seg_train, ade20k_sem_seg_val”</p>
+<p><strong>报错OS Error</strong><br>OSError: [WinError 1455] 页面文件太小，无法完成操作。</p>
+<p><strong>解决方法：</strong><br>dataloader.test &#x3D; L(build_data_loader)(<br>    dataset&#x3D;L(torchvision.datasets.ImageNet)(<br>        root&#x3D;”${…train.dataset.root}”,<br>        split&#x3D;”val”,<br>        transform&#x3D;L(T.Compose)(<br>            transforms&#x3D;[<br>                L(T.Resize)(size&#x3D;256),<br>                L(T.CenterCrop)(size&#x3D;224),<br>                T.ToTensor(),<br>                L(T.Normalize)(mean&#x3D;(0.485, 0.456, 0.406), std&#x3D;(0.229, 0.224, 0.225)),<br>            ]<br>        ),<br>    ),<br>    batch_size&#x3D;256 &#x2F;&#x2F; 8,<br>    num_workers&#x3D;4, #修改此处的num_workers&#x3D;0即可<br>    training&#x3D;False,<br>)</p>
+<p><strong>其他报错：</strong><br>[04&#x2F;25 16:25:24 d2.engine.train_loop]: Starting training from iteration 0<br>Install mish-cuda to speed up training and inference. More importantly, replace the naive Mish with MishCuda will give a ~1.5G memory saving during training.<br>Traceback (most recent call last):<br>  File “<string>“, line 1, in <module><br>  File “D:\Anaconda3\envs\detectron2\lib\multiprocessing\spawn.py”, line 116, in spawn_main<br>    exitcode &#x3D; _main(fd, parent_sentinel)<br>  File “D:\Anaconda3\envs\detectron2\lib\multiprocessing\spawn.py”, line 125, in _main<br>    prepare(preparation_data)<br>  File “D:\Anaconda3\envs\detectron2\lib\multiprocessing\spawn.py”, line 236, in prepare<br>    _fixup_main_from_path(data[‘init_main_from_path’])<br>  File “D:\Anaconda3\envs\detectron2\lib\multiprocessing\spawn.py”, line 287, in _fixup_main_from_path<br>    main_content &#x3D; runpy.run_path(main_path,<br>  File “D:\Anaconda3\envs\detectron2\lib\runpy.py”, line 265, in run_path<br>    return _run_module_code(code, init_globals, run_name,<br>  File “D:\Anaconda3\envs\detectron2\lib\runpy.py”, line 97, in _run_module_code<br>    _run_code(code, mod_globals, init_globals,<br>  File “D:\Anaconda3\envs\detectron2\lib\runpy.py”, line 87, in _run_code<br>    exec(code, run_globals)<br>  File “E:\anacondalib\detectron2\YOLOF-master\YOLOF-master\tools\train_net.py”, line 47, in <module><br>    from torch.contrib._tensorboard_vis import visualize<br>  File “D:\Anaconda3\envs\detectron2\lib\site-packages\torch\contrib_tensorboard_vis.py”, line 17, in <module><br>    raise ImportError(“TensorBoard visualization of GraphExecutors requires having “<br><strong>ImportError: TensorBoard visualization of GraphExecutors requires having TensorFlow installed</strong></p>
+<h1 id="现阶段-当前-遇到的问题："><a href="#现阶段-当前-遇到的问题：" class="headerlink" title="现阶段(当前)遇到的问题："></a>现阶段(当前)遇到的问题：</h1><p>yolof可以跑起来，但是目前的问题在于识别结果框的visualize可视化出了一些问题，yolof这一块跑起来以后目前无法做出成功的可视化框。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">阿良</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2025/05/21/Detectron2yolof/">http://example.com/2025/05/21/Detectron2yolof/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">AlanWu的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://pic2.zhimg.com/80/v2-30a9500b5ebf9347aae5b74404229d07_r.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/05/21/hexo%20command/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic1.16pic.com%2F00%2F01%2F33%2F16pic_133629_b.jpg&amp;refer=http%3A%2F%2Fpic1.16pic.com&amp;app=2002&amp;size=f9999,10000&amp;q=a80&amp;n=0&amp;g=0n&amp;fmt=auto?sec=1651475751&amp;t=a2d265b9971c3bb8722e6258af9662d6" onerror="onerror=null;src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Hexo常用命令</div></div></a></div><div class="next-post pull-right"><a href="/2025/05/21/deeplearning/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fspider.ws.126.net%2F307b617a49403baabdeaa7841c50db4d.jpeg&amp;refer=http%3A%2F%2Fspider.ws.126.net&amp;app=2002&amp;size=f9999,10000&amp;q=a80&amp;n=0&amp;g=0n&amp;fmt=auto?sec=1651475661&amp;t=c02de3ae75d33ffdf72d8f7b907c36df" onerror="onerror=null;src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">机器学习，深度学习，神经网络，深度神经网络之间有何区别？</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic3.zhimg.com/80/v2-741506174e170418d38dba06563b41b7_720w.jpg?source=1940ef5c" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">阿良</div><div class="author-info__description">不必为昨天的泪而弄湿今天的阳光</div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">10</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://blog.csdn.net/blink182007?type=blog"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://graph.qq.com/oauth2.0/show?which=Login&amp;display=pc&amp;response_type=code&amp;client_id=101559500&amp;redirect_uri=https:%2F%2Fcpo.qq.com%2Fconnect%2Fcallback&amp;scope=get_user_info" target="_blank" title="QQ"><i class="iconfont icon-qq"></i></a><a class="social-icon" href="https://filehelper.weixin.qq.com" target="_blank" title="微信"><i class="iconfont icon-weixin"></i></a><a class="social-icon" href="https://ddrk.me" target="_blank" title="低端影视"><i class="iconfont icon-dianyingyuan"></i></a><a class="social-icon" href="https://www.chaoxing.com" target="_blank" title="超星学习通"><i class="iconfont icon-menhuchangyongyingyongxitongICONyuande_chaoxingjiaoxuepingtai"></i></a><a class="social-icon" href="https://blog.csdn.net/blink182007?type=blog" target="_blank" title="追随我CSDN"><i class="iconfont icon-csdn"></i></a><a class="social-icon" href="https://www.cnki.net" target="_blank" title="中国知网"><i class="iconfont icon-zhiwang"></i></a><a class="social-icon" href="https://v.qq.com/" target="_blank" title="腾讯视频"><i class="iconfont icon-tengxunvideo"></i></a><a class="social-icon" href="http://www.4399.com/" target="_blank" title="4399小游戏"><i class="iconfont icon-youxiwang"></i></a><a class="social-icon" href="https://www.iqiyi.com/" target="_blank" title="爱奇艺"><i class="iconfont icon-aiqiyi"></i></a><a class="social-icon" href="https://www.baidu.com" target="_blank" title="百度一下"><i class="iconfont icon-icon_baidulogo"></i></a><a class="social-icon" href="https://www.zhihu.com/people/zhao-mi-nian" target="_blank" title="知乎"><i class="iconfont icon-zhihu"></i></a><a class="social-icon" href="https://weibo.com/u/7191404064" target="_blank" title="新浪微博"><i class="iconfont icon-xinlangweibo"></i></a><a class="social-icon" href="https://www.bilibili.com" target="_blank" title="哔哩哔哩"><i class="iconfont icon-bilibili"></i></a><a class="social-icon" href="https://web.shanbay.com/web/users/243370675/zone" target="_blank" title="扇贝单词"><i class="iconfont icon-kaoyanyingyu"></i></a><a class="social-icon" href="https://www.iqihang.com/ark/record/11098/3726/1334926/158134587/3/72/2/3278" target="_blank" title="考研数学"><i class="iconfont icon-Group45611"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到夜之城</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%80%E8%BF%91%E6%A6%82%E5%86%B5%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">最近概况：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE%E6%9D%A5%E6%BA%90%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">参考文献来源：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A3%80%E6%B5%8B%E4%BB%A3%E7%A0%81%E5%92%8C%E5%AE%9E%E4%BE%8B"><span class="toc-number">3.</span> <span class="toc-text">检测代码和实例</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B7%91YOLOF%E7%9A%84%E7%9B%B8%E5%85%B3%E5%86%85%E5%AE%B9%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">跑YOLOF的相关内容：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#7-1%E6%8A%A5%E9%94%99%E4%B8%8E%E8%A7%A3%E5%86%B3"><span class="toc-number">4.1.</span> <span class="toc-text">7.1报错与解决</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%8E%B0%E9%98%B6%E6%AE%B5-%E5%BD%93%E5%89%8D-%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="toc-number">5.</span> <span class="toc-text">现阶段(当前)遇到的问题：</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/05/21/yoloweihua/" title="YoloV5实战：手把手教物体检测——YoloV5"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img0.baidu.com/it/u=604234677,3784485538&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=PNG?w=464&amp;h=332" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="YoloV5实战：手把手教物体检测——YoloV5"/></a><div class="content"><a class="title" href="/2025/05/21/yoloweihua/" title="YoloV5实战：手把手教物体检测——YoloV5">YoloV5实战：手把手教物体检测——YoloV5</a><time datetime="2025-05-21T09:42:59.963Z" title="发表于 2025-05-21 17:42:59">2025-05-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/21/yolome/" title="初学入门YOLOv5手势识别之制作并训练自己的数据集"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="http://mms2.baidu.com/it/u=1541053178,3942721378&amp;fm=253&amp;app=138&amp;f=JPEG&amp;fmt=auto&amp;q=75?w=474&amp;h=251" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="初学入门YOLOv5手势识别之制作并训练自己的数据集"/></a><div class="content"><a class="title" href="/2025/05/21/yolome/" title="初学入门YOLOv5手势识别之制作并训练自己的数据集">初学入门YOLOv5手势识别之制作并训练自己的数据集</a><time datetime="2025-05-21T09:42:59.962Z" title="发表于 2025-05-21 17:42:59">2025-05-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/21/yolo/" title="目标检测：单阶段YOLOv5及其相关应用介绍"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img0.baidu.com/it/u=3756588693,3502079798&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=GIF?w=499&amp;h=298" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="目标检测：单阶段YOLOv5及其相关应用介绍"/></a><div class="content"><a class="title" href="/2025/05/21/yolo/" title="目标检测：单阶段YOLOv5及其相关应用介绍">目标检测：单阶段YOLOv5及其相关应用介绍</a><time datetime="2025-05-21T09:42:59.906Z" title="发表于 2025-05-21 17:42:59">2025-05-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/21/sony1/" title="索尼微单编年史"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pic3.zhimg.com/80/v2-05109d3d7158aa8a6dd0aa8bf74c07bc_r.jpg" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="索尼微单编年史"/></a><div class="content"><a class="title" href="/2025/05/21/sony1/" title="索尼微单编年史">索尼微单编年史</a><time datetime="2025-05-21T09:42:59.904Z" title="发表于 2025-05-21 17:42:59">2025-05-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/21/shanghaidaxueyolo/" title="上海交大提出CDNet：基于改进YOLOv5的斑马线和汽车过线行为检测"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img1.baidu.com/it/u=2256398362,2776889111&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=PNG?w=499&amp;h=299" onerror="this.onerror=null;this.src='https://pic1.zhimg.com/80/v2-990ed692abde0d462bc51a5c523c7006_r.jpg'" alt="上海交大提出CDNet：基于改进YOLOv5的斑马线和汽车过线行为检测"/></a><div class="content"><a class="title" href="/2025/05/21/shanghaidaxueyolo/" title="上海交大提出CDNet：基于改进YOLOv5的斑马线和汽车过线行为检测">上海交大提出CDNet：基于改进YOLOv5的斑马线和汽车过线行为检测</a><time datetime="2025-05-21T09:42:59.903Z" title="发表于 2025-05-21 17:42:59">2025-05-21</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By 阿良</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">本地搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="/js/search/local-search.js"></script><script>var endLoading = function () {
+  document.body.style.overflow = 'auto';
+  document.getElementById('loading-box').classList.add("loaded")
+}
+window.addEventListener('load',endLoading)</script><div class="js-pjax"><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://twikoo-5li1em5hj-wcelll.vercel.app/',
+      region: '',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.vemoji)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo-5li1em5hj-wcelll.vercel.app/',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      document.getElementById('twikoo-count').innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div><div class="aplayer no-destroy" data-id="509265479" data-server="netease" data-type="playlist" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-preload="none" data-autoplay="false" muted></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="true"></script><script src="//code.tidio.co/9kuxvjbgybmbb3e1bz7iv4n9y3y5crqm.js" async="async"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  typeof preloader === 'object' && preloader.initLoading()
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script>var endLoading = function () {
+  document.body.style.overflow = 'auto';
+  document.getElementById('loading-box').classList.add("loaded")
+}
+window.addEventListener('load',endLoading)</script></body></html><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script type="text/javascript" src="/js/crash_cheat.js"></script>
